@@ -1,6 +1,13 @@
 public class VisiCalc {
+    
+    Cell[][] spreadsheet;
+    int height;
+    int width;
 
     public VisiCalc(int cols, int rows) {
+        spreadsheet = new Cell[rows][cols];
+        this.height = rows;
+        this.width = cols;
     }
 
     public VisiCalc() {
