@@ -1,12 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-/**
- *
- * @author Winterstorm
- */
 public class VisiCalc {
-    
+
+    public VisiCalc(int rows, int cols) {
+        
+    }
+
+    public static String getHelp() {
+        //TODO
+        return "Help text here.";
+    }
 }
