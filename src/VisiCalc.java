@@ -44,7 +44,7 @@ public class VisiCalc {
     }
 
     private boolean isItActually(String cells) {
-        //takes cells and ranges ONLY
+        //takes cells and ranges ONLY, returns if it is a valid range/cell
         if (cells.indexOf(':') == -1) {
             //if it is a single cell
             return colnum(cells) <= this.width && rownum(cells) <= this.height;
