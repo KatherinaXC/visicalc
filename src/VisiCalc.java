@@ -11,6 +11,12 @@ public class VisiCalc {
         spreadsheet = new Cell[rows][cols];
         this.height = rows;
         this.width = cols;
+        //All cells are null initially
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                spreadsheet[i][j] = new Cell()
+            }
+        }
         //column width default is 10
         this.colwidth = new int[cols];
         for (int i = 0; i < colwidth.length; i++) {
@@ -27,25 +33,35 @@ public class VisiCalc {
         if (input.toLowerCase().equals("quit")) {
             return "Goodbye.";
         } else if (input.toLowerCase().indexOf("clear") == 0) {
-            input = input.substring(5).trim();
+            //reads params and clears them
+            //TODO make this work with multiple
+            input = input.substring(6);
             spreadsheet[rownum(input)][colnum(input)] = null;
             return "Cell cleared.";
         } else if (input.toLowerCase().indexOf("dump") == 0) {
             //TODO fix this
             input = input.substring(4).trim();
-            return input.toUpperCase() + " = {" + spreadsheet[rownum(input)][colnum(input)].dump(colwidth[colnum(input)]) + "}";
+            String[] cellarray = readParams(input);
+            String output = cellarray[0].toUpperCase() + " = {" + spreadsheet[rownum(cellarray[0])][colnum(cellarray[0])].dump(colwidth[colnum(cellarray[0])]) + "}";
+            for (int i = 1; i < cellarray.length; i++) {
+                output += "\n";
+                output += cellarray[i].toUpperCase() + " = {" + spreadsheet[rownum(cellarray[i])][colnum(cellarray[i])].dump(colwidth[colnum(cellarray[i])]) + "}";
+            }
+            return output;
         } else if (input.toLowerCase().indexOf("align") == 0) {
             //TODO this
             return "Align command.";
         } else if (input.toLowerCase().indexOf("width") == 0) {
             //width command
-            int newwidth = Integer.parseInt(input.substring(8));
+            String[] inputarray = input.split(" ");
+            //max possible width
+            int newwidth = Integer.parseInt(inputarray[2]);
             if (newwidth > 20) {
                 newwidth = 20;
             } else if (newwidth < 0) {
                 newwidth = 0;
             }
-            colwidth[Character.toUpperCase(input.charAt(6)) - 'A'] = newwidth;
+            colwidth[Character.toUpperCase(inputarray[1].charAt(0)) - 'A'] = newwidth;
             return "Width of given column set to " + newwidth + ".";
         }
         String[] params = input.split(" = ");
@@ -59,10 +75,12 @@ public class VisiCalc {
     }
 
     public String getValue(String location) {
+        //this... isn't actually used... :/
         return spreadsheet[rownum(location)][colnum(location)] + "";
     }
 
     private boolean isACell(String input) {
+        //does the cell exist
         return input.indexOf(':') == -1
                 && input.indexOf(',') == -1
                 && colnum(input) <= this.width
@@ -79,15 +97,37 @@ public class VisiCalc {
     }
 
     private String[] readParams(String input) {
+        //returns a string array with all combinations of cells
         String[] params = input.split(",");
         int totalcells = 0;
         for (int i = 0; i < params.length; i++) {
             totalcells += numCells(params[i]);
         }
         String[] output = new String[totalcells];
-        
-        //TODO patch this later
+        totalcells = 0;
+        for (int i = 0; i < params.length; i++) {
+            cellArray(params[i], output, totalcells);
+            totalcells += numCells(params[i]);
+        }
         return output;
+    }
+
+    private void cellArray(String param, String[] input, int startslot) {
+        param = param.trim();
+        if (isACell(param)) {
+            //put the cell in the array
+            input[startslot] = param;
+        } else {
+            //put the range in the array
+            String[] cells = param.split(":");
+            int slot = 0;
+            for (int i = 0; i < Character.toUpperCase(cells[0].charAt(0)) - 'A'; i++) {
+                for (int j = 0; j < Integer.parseInt(cells[1].substring(2)); j++) {
+                    input[slot + startslot] = "" + (i + Character.toUpperCase(cells[0].charAt(0))) + (j + Integer.parseInt(cells[1].substring(2)));
+                    slot++;
+                }
+            }
+        }
     }
 
     private int numCells(String param) {
@@ -148,15 +188,8 @@ public class VisiCalc {
             row += (rows + 1);
             //actual data:                
             for (int cols = 0; cols < width; cols++) {
-                if (spreadsheet[rows][cols] == null) {
-                    //if that cell is null, write blanks
-                    for (int i = 0; i < colwidth[cols]; i++) {
-                        row += " ";
-                    }
-                } else {
-                    //if it has content, write its content
-                    row += spreadsheet[rows][cols].toString(colwidth[cols]) + "";
-                }
+                //all cells have content, but "null" cells will return just blanks
+                row += spreadsheet[rows][cols].toString(colwidth[cols]) + "";
             }
             if (row.length() < 80) {
                 output += row + "\n";
