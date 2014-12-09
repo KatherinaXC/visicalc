@@ -3,7 +3,7 @@ public class Cell {
     private String alignment;
     
     public Cell(String input) {
-        this.formula = input;
+        setFormula(input);
     }
     
     public String dump(int colwidth) {
@@ -16,6 +16,10 @@ public class Cell {
     public String calculate() {
         //TODO this method is total BS right now
         return "answer";
+    }
+    
+    public void setFormula(String input) {
+        this.formula = input;
     }
     
     public String toString(int width) {

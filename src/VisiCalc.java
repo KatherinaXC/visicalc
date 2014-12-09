@@ -1,3 +1,4 @@
+
 public class VisiCalc {
 
     private Cell[][] spreadsheet;
@@ -30,11 +31,11 @@ public class VisiCalc {
             spreadsheet[rownum(input)][colnum(input)] = null;
             return "Cell cleared.";
         } else if (input.toLowerCase().indexOf("dump") == 0) {
-            //TODO implement compatability with ranges
+            //TODO fix this
             input = input.substring(4).trim();
             return input.toUpperCase() + " = {" + spreadsheet[rownum(input)][colnum(input)].dump(colwidth[colnum(input)]) + "}";
         } else if (input.toLowerCase().indexOf("align") == 0) {
-            //TODO align command
+            //TODO this
             return "Align command.";
         } else if (input.toLowerCase().indexOf("width") == 0) {
             //width command
@@ -77,29 +78,32 @@ public class VisiCalc {
                 && rownum(cellrange[0]) <= rownum(cellrange[1]);
     }
 
-    private boolean isAParameter(String input) {
-        //split the commas and test each range by itself
+    private String[] readParams(String input) {
         String[] params = input.split(",");
+        int totalcells = 0;
         for (int i = 0; i < params.length; i++) {
-            if (!isARange(params[i]) || !isACell(params[i])) {
-                return false;
-            }
+            totalcells += numCells(params[i]);
         }
-        return true;
+        String[] output = new String[totalcells];
+        
+        //TODO patch this later
+        return output;
     }
 
-    private int[][] readParams(String input) {
-        String[] ranges;
-        if (isAParameter(input)) {
-            ranges = input.split(",");
-            for (int i = 0; i < ranges.length; i++) {
-                ranges[i] = ranges[i].replace(" ", "");
-            }
+    private int numCells(String param) {
+        //return the number of cells in the cell/range
+        param = param.trim();
+        if (isACell(param)) {
+            //one cell is one cell
+            return 1;
+        } else if (isARange(param)) {
+            //if it's a range
+            String[] cells = param.split(":");
+            return (colnum(cells[1]) - colnum(cells[0]) + 1) * (rownum(cells[1]) - rownum(cells[0]) + 1);
         } else {
-            ranges = new String[]{input};
+            //if it's a nonexistent cell or something
+            return 0;
         }
-        //TODO patch this later
-        return new int[2][1];
     }
 
     private int colnum(String cell) {
