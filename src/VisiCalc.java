@@ -1,4 +1,3 @@
-
 public class VisiCalc {
 
     private Cell[][] spreadsheet;
@@ -11,10 +10,10 @@ public class VisiCalc {
         spreadsheet = new Cell[rows][cols];
         this.height = rows;
         this.width = cols;
-        //All cells are null initially
+        //All cells are null initially, assignment creates new cell objects
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                spreadsheet[i][j] = new Cell()
+                spreadsheet[i][j] = new Cell();
             }
         }
         //column width default is 10
@@ -31,16 +30,29 @@ public class VisiCalc {
 
     public String calc(String input) {
         if (input.toLowerCase().equals("quit")) {
+            //self explanatory... quits program
             return "Goodbye.";
         } else if (input.toLowerCase().indexOf("clear") == 0) {
             //reads params and clears them
             //TODO make this work with multiple
-            input = input.substring(6);
-            spreadsheet[rownum(input)][colnum(input)] = null;
-            return "Cell cleared.";
+            input = input.substring(5);
+            if (input.equals("")) {
+                //clear ALL the cells
+                input = "A1:" + (spreadsheet[0].length + 'A') + (spreadsheet.length);
+            }
+            String[] cellarray = readParams(input);
+            for (int i = 0; i < cellarray.length; i++) {
+                spreadsheet[rownum(cellarray[i])][colnum(cellarray[i])].clear();
+            }
+            return null;
         } else if (input.toLowerCase().indexOf("dump") == 0) {
             //TODO fix this
+            //dumps cells, their formulas, values, alignments, widths
             input = input.substring(4).trim();
+            if (input.equals("")) {
+                //dump ALL the cells
+                input = "A1:" + (spreadsheet[0].length + 'A') + (spreadsheet.length);
+            }
             String[] cellarray = readParams(input);
             String output = cellarray[0].toUpperCase() + " = {" + spreadsheet[rownum(cellarray[0])][colnum(cellarray[0])].dump(colwidth[colnum(cellarray[0])]) + "}";
             for (int i = 1; i < cellarray.length; i++) {
@@ -49,29 +61,38 @@ public class VisiCalc {
             }
             return output;
         } else if (input.toLowerCase().indexOf("align") == 0) {
-            //TODO this
-            return "Align command.";
+            //because only a cell or a range of cells can be input
+            //assuming input ranges are valid
+            String[] inputarray = input.split(" ");
+            String[] cellarray = readParams(inputarray[1]);
+            for (int i = 0; i < cellarray.length; i++) {
+                spreadsheet[rownum(cellarray[i])][colnum(cellarray[i])].align(inputarray[2]);
+            }
+            return null;
         } else if (input.toLowerCase().indexOf("width") == 0) {
             //width command
+            //assuming input is valid column
             String[] inputarray = input.split(" ");
-            //max possible width
+            //max possible width is 20
             int newwidth = Integer.parseInt(inputarray[2]);
             if (newwidth > 20) {
                 newwidth = 20;
             } else if (newwidth < 0) {
                 newwidth = 0;
             }
+            //set the width
             colwidth[Character.toUpperCase(inputarray[1].charAt(0)) - 'A'] = newwidth;
-            return "Width of given column set to " + newwidth + ".";
+            return null;
         }
+        //Assumed enter-assignment mode
         String[] params = input.split(" = ");
         if (!isACell(params[0])) {
             //Valid-cell error checking for LEFT SIDE ERRORS
             return "Cell reference, " + params[0] + ", is invalid";
         }
-        spreadsheet[rownum(params[0])][colnum(params[0])] = new Cell(params[1]);
         //TODO actual method running
-        return "Assignment command.";
+        spreadsheet[rownum(params[0])][colnum(params[0])] = new Cell(params[1]);
+        return null;
     }
 
     public String getValue(String location) {
@@ -119,11 +140,11 @@ public class VisiCalc {
             input[startslot] = param;
         } else {
             //put the range in the array
-            String[] cells = param.split(":");
+            String[] cellcorners = param.split(":");
             int slot = 0;
-            for (int i = 0; i < Character.toUpperCase(cells[0].charAt(0)) - 'A'; i++) {
-                for (int j = 0; j < Integer.parseInt(cells[1].substring(2)); j++) {
-                    input[slot + startslot] = "" + (i + Character.toUpperCase(cells[0].charAt(0))) + (j + Integer.parseInt(cells[1].substring(2)));
+            for (int i = 0; i <= Character.toUpperCase(cellcorners[1].charAt(0)) - Character.toUpperCase(cellcorners[0].charAt(0)); i++) {
+                for (int j = 0; j <= Integer.parseInt(cellcorners[1].substring(1)) - Integer.parseInt(cellcorners[0].substring(1)); j++) {
+                    input[slot + startslot] = "" + (char) (Character.toUpperCase(cellcorners[0].charAt(0)) + i) + (Integer.parseInt(cellcorners[0].substring(1)) + j);
                     slot++;
                 }
             }

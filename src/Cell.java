@@ -1,41 +1,49 @@
-
 public class Cell {
 
-    private boolean isNull;
-    private String formula;
-    private String alignment;
+    private Formula formula = new Formula();
+    private String alignment = "auto";
 
     public Cell(String input) {
         setFormula(input);
     }
 
     public Cell() {
-        this.isNull = true;
+        this.formula = null;
     }
 
     public void clear() {
-        this.isNull = false;
+        this.formula = null;
     }
 
     public String dump(int colwidth) {
-        return " \"Formula\" = \"" + formula
+        return " \"Formula\" = \"" + this.formula
                 + "\", \"Value\" = \"" + calculate()
-                + "\", \"Alignment\" = \"" + alignment
+                + "\", \"Alignment\" = \"" + this.alignment
                 + "\", \"Width\" = \"" + colwidth + "\" ";
+    }
+
+    public void align(String input) {
+        input = input.toLowerCase();
+        if (input.equals("left")) {
+            this.alignment = "left";
+        } else if (input.equals("auto")) {
+            this.alignment = "auto";
+        } else if (input.equals("right")) {
+            this.alignment = "right";
+        }
     }
 
     public String calculate() {
         //TODO this method is total BS right now
-        return "answer";
+        return formula + "";
     }
 
     public void setFormula(String input) {
-        this.formula = input;
-        this.isNull = false;
+        this.formula.set(input);
     }
 
     public String toString(int width) {
-        if (isNull) {
+        if (this.formula == null) {
             String output = "";
             for (int i = 0; i < width; i++) {
                 output += " ";
