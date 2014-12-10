@@ -16,8 +16,9 @@ public class Cell {
     }
 
     public String dump(int colwidth) {
+        //Dump for empty cells says "null" right?
         return " \"Formula\" = \"" + this.formula
-                + "\", \"Value\" = \"" + calculate()
+                + "\", \"Value\" = \"" + this.formula
                 + "\", \"Alignment\" = \"" + this.alignment
                 + "\", \"Width\" = \"" + colwidth + "\" ";
     }
@@ -33,30 +34,24 @@ public class Cell {
         }
     }
 
-    public String calculate() {
-        //TODO this method is total BS right now
-        return formula;
-    }
-
     public void setFormula(String input) {
         this.formula = input;
     }
 
+    public String getFormula() {
+        return this.formula;
+    }
+
+    public String getAlignment() {
+        return this.alignment;
+    }
+
     public String toString(int width) {
-        if (this.formula == null) {
-            //if it's no value
-            String output = "";
-            for (int i = 0; i < width; i++) {
-                output += " ";
-            }
-            return output;
-        } else {
-            //TODO this method is total bs right now just for testing purposes, change it later
-            String output = "";
-            for (int i = 0; i < width; i++) {
-                output += "i";
-            }
-            return output;
+        //This class is only going to be used for blank cells anyway, so that VisiCalc doesn't crash on "dump"
+        String output = "";
+        for (int i = 0; i < width; i++) {
+            output += " ";
         }
+        return output;
     }
 }

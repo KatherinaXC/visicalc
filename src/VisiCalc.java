@@ -94,7 +94,11 @@ public class VisiCalc {
             //literal number
             spreadsheet[rownum(params[0])][colnum(params[0])] = new CellNum(params[1]);
         } else if (isText(params[1])) {
+            //literal text
             spreadsheet[rownum(params[0])][colnum(params[0])] = new CellText(params[1]);
+        } else {
+            //expression, as the input for this project can't be invalid this is probably valid
+            spreadsheet[rownum(params[0])][colnum(params[0])] = new CellExpr(params[1]);
         }
         return null;
     }
