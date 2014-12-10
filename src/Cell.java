@@ -35,7 +35,7 @@ public class Cell {
 
     public String calculate() {
         //TODO this method is total BS right now
-        return formula + "";
+        return formula;
     }
 
     public void setFormula(String input) {

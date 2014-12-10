@@ -39,7 +39,7 @@ public class VisiCalc {
                 //clear ALL the cells - set input to full table
                 input = fullTable();
             }
-            String[] cellarray = readParams(input);
+            String[] cellarray = getIndividualCells(input);
             for (int i = 0; i < cellarray.length; i++) {
                 spreadsheet[rownum(cellarray[i])][colnum(cellarray[i])].clear();
             }
@@ -51,7 +51,7 @@ public class VisiCalc {
                 //dump ALL the cells - set input to full table
                 input = fullTable();
             }
-            String[] cellarray = readParams(input);
+            String[] cellarray = getIndividualCells(input);
             String output = cellarray[0].toUpperCase() + " = {" + spreadsheet[rownum(cellarray[0])][colnum(cellarray[0])].dump(colwidth[colnum(cellarray[0])]) + "}";
             for (int i = 1; i < cellarray.length; i++) {
                 output += "\n";
@@ -63,7 +63,7 @@ public class VisiCalc {
             //because only a cell or a range of cells can be input
             //assuming input ranges are valid
             String[] inputarray = input.split(" ");
-            String[] cellarray = readParams(inputarray[1]);
+            String[] cellarray = getIndividualCells(inputarray[1]);
             for (int i = 0; i < cellarray.length; i++) {
                 spreadsheet[rownum(cellarray[i])][colnum(cellarray[i])].align(inputarray[2]);
             }
@@ -86,17 +86,32 @@ public class VisiCalc {
         //Assumed enter-assignment mode
         String[] params = input.split(" = ");
         if (!isACell(params[0])) {
-            //Valid-cell error checking for LEFT SIDE ERRORS
+            //Valid-cell error checking for LEFT SIDE ERRORS ONLY
             return "Cell reference, " + params[0] + ", is invalid";
         }
         //TODO actual method running
-        spreadsheet[rownum(params[0])][colnum(params[0])] = new Cell(params[1]);
+        if (isNum(params[1])) {
+            //literal number
+            spreadsheet[rownum(params[0])][colnum(params[0])] = new CellNum(params[1]);
+        } else if (isText(params[1])) {
+            spreadsheet[rownum(params[0])][colnum(params[0])] = new CellText(params[1]);
+        }
         return null;
     }
 
-    public String getValue(String location) {
-        //this... isn't actually used... :/
-        return spreadsheet[rownum(location)][colnum(location)] + "";
+    public boolean isNum(String input) {
+        //returns if the string is number literal
+        for (int i = 0; i < input.length(); i++) {
+            if (!Character.isDigit(input.charAt(i)) || input.charAt(i) != '.') {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    public boolean isText(String input) {
+        //returns if the string is text literal
+        return (input != null) && (input.charAt(0) == '"') && (input.charAt(input.length() - 1) == '"');
     }
 
     private boolean isACell(String input) {
@@ -116,7 +131,7 @@ public class VisiCalc {
                 && rownum(cellrange[0]) <= rownum(cellrange[1]);
     }
 
-    private String[] readParams(String input) {
+    private String[] getIndividualCells(String input) {
         //returns a string array with all combinations of cells
         String[] params = input.split(",");
         int totalcells = 0;
@@ -130,6 +145,11 @@ public class VisiCalc {
             totalcells += numCells(params[i]);
         }
         return output;
+    }
+
+    public String getValue(String location) {
+        //this... isn't actually used... :/
+        return spreadsheet[rownum(location)][colnum(location)] + "";
     }
 
     private void cellArray(String param, String[] input, int startslot) {
@@ -174,6 +194,10 @@ public class VisiCalc {
     private int rownum(String cell) {
         //returns the row number of the given cell
         return Integer.parseInt(cell.substring(1)) - 1;
+    }
+
+    private String fullTable() {
+        return "A1:" + (char) ('A' + width - 1) + (height);
     }
 
     public String toString() {
@@ -223,9 +247,5 @@ public class VisiCalc {
     public static String getHelp() {
         //TODO update as necessary 
         return "Help text here.";
-    }
-
-    private String fullTable() {
-        return "A1:" + (char) ('A' + width - 1) + (height);
     }
 }
