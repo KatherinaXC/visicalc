@@ -29,6 +29,7 @@ public class VisiCalc {
     }
 
     public String calc(String input) {
+        //TODO should I implement help command?
         if (input.toLowerCase().equals("quit")) {
             //self explanatory... quits program
             return "Goodbye.";
