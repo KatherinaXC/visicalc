@@ -34,11 +34,10 @@ public class VisiCalc {
             return "Goodbye.";
         } else if (input.toLowerCase().indexOf("clear") == 0) {
             //reads params and clears them
-            //TODO make this work with multiple
             input = input.substring(5);
             if (input.equals("")) {
-                //clear ALL the cells
-                input = "A1:" + (spreadsheet[0].length + 'A') + (spreadsheet.length);
+                //clear ALL the cells - set input to full table
+                input = fullTable();
             }
             String[] cellarray = readParams(input);
             for (int i = 0; i < cellarray.length; i++) {
@@ -46,18 +45,18 @@ public class VisiCalc {
             }
             return null;
         } else if (input.toLowerCase().indexOf("dump") == 0) {
-            //TODO fix this
             //dumps cells, their formulas, values, alignments, widths
             input = input.substring(4).trim();
             if (input.equals("")) {
-                //dump ALL the cells
-                input = "A1:" + (spreadsheet[0].length + 'A') + (spreadsheet.length);
+                //dump ALL the cells - set input to full table
+                input = fullTable();
             }
             String[] cellarray = readParams(input);
             String output = cellarray[0].toUpperCase() + " = {" + spreadsheet[rownum(cellarray[0])][colnum(cellarray[0])].dump(colwidth[colnum(cellarray[0])]) + "}";
             for (int i = 1; i < cellarray.length; i++) {
                 output += "\n";
                 output += cellarray[i].toUpperCase() + " = {" + spreadsheet[rownum(cellarray[i])][colnum(cellarray[i])].dump(colwidth[colnum(cellarray[i])]) + "}";
+
             }
             return output;
         } else if (input.toLowerCase().indexOf("align") == 0) {
@@ -224,5 +223,9 @@ public class VisiCalc {
     public static String getHelp() {
         //TODO update as necessary 
         return "Help text here.";
+    }
+
+    private String fullTable() {
+        return "A1:" + (char) ('A' + width - 1) + (height);
     }
 }

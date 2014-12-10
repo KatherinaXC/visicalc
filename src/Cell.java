@@ -1,6 +1,6 @@
 public class Cell {
 
-    private Formula formula = new Formula();
+    private String formula;
     private String alignment = "auto";
 
     public Cell(String input) {
@@ -39,11 +39,12 @@ public class Cell {
     }
 
     public void setFormula(String input) {
-        this.formula.set(input);
+        this.formula = input;
     }
 
     public String toString(int width) {
         if (this.formula == null) {
+            //if it's no value
             String output = "";
             for (int i = 0; i < width; i++) {
                 output += " ";
