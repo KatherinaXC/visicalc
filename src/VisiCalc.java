@@ -74,7 +74,7 @@ public class VisiCalc {
             //because only a cell or a range of cells can be input
             String[] inputarray = input.split(" ");
             String alignment = inputarray[inputarray.length - 1];
-            String params = input.substring(5, input.length() - alignment.length() - 1);
+            String params = input.substring(5, input.length() - alignment.length());
             //test if input is valid
             if (!isAParameter(params)) {
                 return "Invalid parameters";
@@ -161,7 +161,7 @@ public class VisiCalc {
         String[] params = input.split(",");
         for (int i = 0; i < params.length; i++) {
             params[i] = params[i].trim();
-            if (!isACell(params[i]) || !isARange(params[i])) {
+            if (!isACell(params[i]) && !isARange(params[i])) {
                 return false;
             }
         }
