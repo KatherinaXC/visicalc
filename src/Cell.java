@@ -16,9 +16,13 @@ public class Cell {
     }
 
     public String dump(int colwidth) {
-        //Dump for empty cells says "null" right?
-        return " \"Formula\" = \"" + this.formula
-                + "\", \"Value\" = \"" + this.formula
+        String dumpformula = this.formula;
+        //Dump for empty cells says is blank
+        if (this.formula == null) {
+            dumpformula = "";
+        }
+        return " \"Formula\" = \"" + dumpformula
+                + "\", \"Value\" = \"" + dumpformula
                 + "\", \"Alignment\" = \"" + this.alignment
                 + "\", \"Width\" = \"" + colwidth + "\" ";
     }

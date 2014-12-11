@@ -1,3 +1,4 @@
+
 public class VisiCalc {
 
     private Cell[][] spreadsheet;
@@ -29,16 +30,21 @@ public class VisiCalc {
     }
 
     public String calc(String input) {
-        //TODO should I implement help command?
         if (input.toLowerCase().equals("quit")) {
             //self explanatory... quits program
             return "Goodbye.";
+        } else if (input.toLowerCase().equals("help")) {
+            return getHelp();
         } else if (input.toLowerCase().indexOf("clear") == 0) {
             //reads params and clears them
             input = input.substring(5);
             if (input.equals("")) {
                 //clear ALL the cells - set input to full table
                 input = fullTable();
+            }
+            //test if input is valid
+            if (!isAParameter(input)) {
+                return "Invalid parameters";
             }
             String[] cellarray = getIndividualCells(input);
             for (int i = 0; i < cellarray.length; i++) {
@@ -52,6 +58,10 @@ public class VisiCalc {
                 //dump ALL the cells - set input to full table
                 input = fullTable();
             }
+            //test if input is valid
+            if (!isAParameter(input)) {
+                return "Invalid parameters";
+            }
             String[] cellarray = getIndividualCells(input);
             String output = cellarray[0].toUpperCase() + " = {" + spreadsheet[rownum(cellarray[0])][colnum(cellarray[0])].dump(colwidth[colnum(cellarray[0])]) + "}";
             for (int i = 1; i < cellarray.length; i++) {
@@ -62,17 +72,25 @@ public class VisiCalc {
             return output;
         } else if (input.toLowerCase().indexOf("align") == 0) {
             //because only a cell or a range of cells can be input
-            //assuming input ranges are valid
             String[] inputarray = input.split(" ");
-            String[] cellarray = getIndividualCells(inputarray[1]);
+            String alignment = inputarray[inputarray.length - 1];
+            String params = input.substring(5, input.length() - alignment.length() - 1);
+            //test if input is valid
+            if (!isAParameter(params)) {
+                return "Invalid parameters";
+            }
+            String[] cellarray = getIndividualCells(params);
             for (int i = 0; i < cellarray.length; i++) {
-                spreadsheet[rownum(cellarray[i])][colnum(cellarray[i])].align(inputarray[2]);
+                spreadsheet[rownum(cellarray[i])][colnum(cellarray[i])].align(alignment);
             }
             return null;
         } else if (input.toLowerCase().indexOf("width") == 0) {
             //width command
-            //assuming input is valid column
             String[] inputarray = input.split(" ");
+            //test if input column is valid
+            if (Character.toUpperCase(inputarray[2].charAt(0)) - 'A' > width) {
+                return "That column does not exist";
+            }
             //max possible width is 20
             int newwidth = Integer.parseInt(inputarray[2]);
             if (newwidth > 20) {
@@ -90,7 +108,7 @@ public class VisiCalc {
             //Valid-cell error checking for LEFT SIDE ERRORS ONLY
             return "Cell reference, " + params[0] + ", is invalid";
         }
-        //TODO actual method running
+        //assign and create cells
         if (isNum(params[1])) {
             //literal number
             spreadsheet[rownum(params[0])][colnum(params[0])] = new CellNum(params[1]);
@@ -98,7 +116,8 @@ public class VisiCalc {
             //literal text
             spreadsheet[rownum(params[0])][colnum(params[0])] = new CellText(params[1]);
         } else {
-            //expression, as the input for this project can't be invalid this is probably valid
+            //expression, as the input for this project can't be syntactically invalid this is probably valid
+            //TODO is it actually always valid... -_-
             spreadsheet[rownum(params[0])][colnum(params[0])] = new CellExpr(params[1]);
         }
         return null;
@@ -106,14 +125,16 @@ public class VisiCalc {
 
     public boolean isNum(String input) {
         //returns if the string is number literal
+        int numdots = 0;
         for (int i = 0; i < input.length(); i++) {
-            if (!Character.isDigit(input.charAt(i)) || input.charAt(i) != '.') {
+            //there can only be one decimal point dot thing
+            if (!Character.isDigit(input.charAt(i)) || (numdots > 0 && input.charAt(i) == '.')) {
                 return false;
             }
         }
         return true;
     }
-    
+
     public boolean isText(String input) {
         //returns if the string is text literal
         return (input != null) && (input.charAt(0) == '"') && (input.charAt(input.length() - 1) == '"');
@@ -134,6 +155,17 @@ public class VisiCalc {
                 && isACell(cellrange[1])
                 && colnum(cellrange[0]) <= colnum(cellrange[1])
                 && rownum(cellrange[0]) <= rownum(cellrange[1]);
+    }
+
+    private boolean isAParameter(String input) {
+        String[] params = input.split(",");
+        for (int i = 0; i < params.length; i++) {
+            params[i] = params[i].trim();
+            if (!isACell(params[i]) || !isARange(params[i])) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private String[] getIndividualCells(String input) {
@@ -250,7 +282,7 @@ public class VisiCalc {
     }
 
     public static String getHelp() {
-        //TODO update as necessary 
+        //TODO update as necessary
         return "Help text here.";
     }
 }
