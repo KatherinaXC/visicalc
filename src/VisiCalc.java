@@ -103,7 +103,9 @@ public class VisiCalc {
             return null;
         }
         //Assumed enter-assignment mode
-        String[] params = input.split(" = ");
+        String[] params = input.split("=");
+        params[0] = params[0].trim();
+        params[1] = params[2].trim();
         if (!isACell(params[0])) {
             //Valid-cell error checking for LEFT SIDE ERRORS ONLY
             return "Cell reference, " + params[0] + ", is invalid";
@@ -240,7 +242,7 @@ public class VisiCalc {
     public String toString() {
         String output = "";
         //top row (just the column headers)
-        String row = "  ";
+        String row = "   ";
         for (int cols = 0; cols < width; cols++) {
             for (int spaces = 0; spaces < colwidth[cols] / 2; spaces++) {
                 row += " ";
@@ -266,7 +268,7 @@ public class VisiCalc {
                 //this is so that the one-digit row numbers get padded
                 row += " ";
             }
-            row += (rows + 1);
+            row += (rows + 1) + " ";
             //actual data:                
             for (int cols = 0; cols < width; cols++) {
                 //all cells have content, but "null" cells will return just blanks

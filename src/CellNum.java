@@ -27,12 +27,12 @@ public class CellNum extends Cell {
         if (output.length() < width) {
             if (getAlignment().equals("left")) {
                 //pad the right side
-                for (int i = getFormula().length(); i <= width; i++) {
+                for (int i = getFormula().length(); i < width; i++) {
                     output += " ";
                 }
             } else if (getAlignment().equals("right") || getAlignment().equals("auto")) {
                 //pad the left side
-                for (int i = getFormula().length(); i <= width; i++) {
+                for (int i = getFormula().length(); i < width; i++) {
                     output = " " + output;
                 }
             }
