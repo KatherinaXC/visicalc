@@ -1,7 +1,18 @@
 public class CellNum extends Cell {
     public CellNum(String input) {
         super(input);
-        align("right");
+    }
+    
+    public String dump(int colwidth) {
+        String dumpformula = getFormula();
+        //Dump for empty cells says is blank
+        if (dumpformula == null) {
+            dumpformula = "";
+        }
+        return " \"Formula\" = \"" + dumpformula
+                + "\", \"Value\" = \"" + dumpformula
+                + "\", \"Alignment\" = \"" + getAlignment()
+                + "\", \"Width\" = \"" + colwidth + "\" ";
     }
     
     public String toString(int width) {

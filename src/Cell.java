@@ -4,7 +4,7 @@ public class Cell {
     private String alignment = "auto";
 
     public Cell(String input) {
-        setFormula(input.trim());
+        setFormula(input);
     }
 
     public Cell() {
@@ -39,7 +39,7 @@ public class Cell {
     }
 
     public void setFormula(String input) {
-        this.formula = input;
+        this.formula = input.trim();
     }
 
     public String getFormula() {

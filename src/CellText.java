@@ -1,8 +1,22 @@
+
 public class CellText extends Cell {
+
     public CellText(String input) {
         super(input.substring(1, input.length() - 1));
-        align("left");
     }
+
+    public String dump(int colwidth) {
+        String dumpformula = getFormula();
+        //Dump for empty cells says is blank
+        if (dumpformula == null) {
+            dumpformula = "";
+        }
+        return " \"Formula\" = \"" + dumpformula
+                + "\", \"Value\" = \"" + dumpformula
+                + "\", \"Alignment\" = \"" + getAlignment()
+                + "\", \"Width\" = \"" + colwidth + "\" ";
+    }
+
     public String toString(int width) {
         String output = getFormula() + "";
         //if output is NOTHING (cleared)
