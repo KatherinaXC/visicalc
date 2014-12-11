@@ -88,7 +88,7 @@ public class VisiCalc {
             //width command
             String[] inputarray = input.split(" ");
             //test if input column is valid
-            if (Character.toUpperCase(inputarray[2].charAt(0)) - 'A' > width) {
+            if (Character.toUpperCase(inputarray[1].charAt(0)) - 'A' + 1 > width) {
                 return "That column does not exist";
             }
             //max possible width is 20
@@ -144,8 +144,8 @@ public class VisiCalc {
         //does the cell exist
         return input.indexOf(':') == -1
                 && input.indexOf(',') == -1
-                && colnum(input) <= this.width
-                && rownum(input) <= this.height;
+                && colnum(input) + 1 <= this.width
+                && rownum(input) + 1 <= this.height;
     }
 
     private boolean isARange(String input) {
