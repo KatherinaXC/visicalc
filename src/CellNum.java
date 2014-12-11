@@ -6,6 +6,13 @@ public class CellNum extends Cell {
     
     public String toString(int width) {
         String output = getFormula() + "";
+        //if output is NOTHING (cleared)
+        if (output.equals("")) {
+            for (int i = 0; i < width; i++) {
+                output += " ";
+            }
+            return output;
+        }
         if (output.length() < width) {
             if (getAlignment().equals("left")) {
                 //pad the right side
