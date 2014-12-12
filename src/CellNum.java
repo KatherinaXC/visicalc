@@ -16,22 +16,26 @@ public class CellNum extends Cell {
                 + "\", \"Width\" = \"" + colwidth + "\" ";
     }
 
+    private Double getVal() {
+        return Double.parseDouble(getFormula());
+    }
+
     public String toString(int width) {
         //if output is NOTHING (cleared)
         if (getFormula() == null) {
             return super.toString(width);
         }
         //otherwise, if there is something
-        String output = getFormula();
+        String output = getVal() + "";
         if (output.length() < width) {
             if (getAlignment().equals("left")) {
                 //pad the right side
-                for (int i = getFormula().length(); i < width; i++) {
+                while (output.length() < width) {
                     output += " ";
                 }
             } else if (getAlignment().equals("right") || getAlignment().equals("auto")) {
                 //pad the left side
-                for (int i = getFormula().length(); i < width; i++) {
+                while (output.length() < width) {
                     output = " " + output;
                 }
             }

@@ -26,12 +26,12 @@ public class CellText extends Cell {
         if (output.length() < width) {
             if (getAlignment().equals("left") || getAlignment().equals("auto")) {
                 //pad the right side
-                for (int i = getFormula().length(); i < width; i++) {
+                while (output.length() < width) {
                     output += " ";
                 }
             } else if (getAlignment().equals("right")) {
                 //pad the left side
-                for (int i = getFormula().length(); i < width; i++) {
+                while (output.length() < width) {
                     output = " " + output;
                 }
             }

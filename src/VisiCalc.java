@@ -1,4 +1,3 @@
-
 public class VisiCalc {
 
     private Cell[][] spreadsheet;
@@ -63,15 +62,15 @@ public class VisiCalc {
                 return "Invalid parameters";
             }
             String[] cellarray = getIndividualCells(input);
-            String output = cellarray[0].toUpperCase() 
-                    + " = {" 
-                    + spreadsheet[rownum(cellarray[0])][colnum(cellarray[0])].dump(colwidth[colnum(cellarray[0])]) 
+            String output = cellarray[0].toUpperCase()
+                    + " = {"
+                    + spreadsheet[rownum(cellarray[0])][colnum(cellarray[0])].dump(colwidth[colnum(cellarray[0])])
                     + "}";
             for (int i = 1; i < cellarray.length; i++) {
                 output += "\n";
-                output += cellarray[i].toUpperCase() 
-                        + " = {" 
-                        + spreadsheet[rownum(cellarray[i])][colnum(cellarray[i])].dump(colwidth[colnum(cellarray[i])]) 
+                output += cellarray[i].toUpperCase()
+                        + " = {"
+                        + spreadsheet[rownum(cellarray[i])][colnum(cellarray[i])].dump(colwidth[colnum(cellarray[i])])
                         + "}";
 
             }
@@ -94,8 +93,8 @@ public class VisiCalc {
             //width command
             String[] inputarray = input.split(" ");
             //test if input column is valid
-            if (inputarray[1].length() != 1 
-                    ||  !Character.isLetter(inputarray[1].charAt(0))
+            if (inputarray[1].length() != 1
+                    || !Character.isLetter(inputarray[1].charAt(0))
                     || Character.toUpperCase(inputarray[1].charAt(0)) - 'A' + 1 > width) {
                 return "That column does not exist";
             }
@@ -119,34 +118,17 @@ public class VisiCalc {
             return "Cell reference, " + params[0] + ", is invalid";
         }
         //assign and create cells
-        if (isNum(params[1])) {
-            //literal number
-            spreadsheet[rownum(params[0])][colnum(params[0])] = new CellNum(params[1]);
+        if (Character.isLetter(params[1].charAt(0))) {
+            //expression or reference
+            spreadsheet[rownum(params[0])][colnum(params[0])] = new CellExpr(params[1]);
         } else if (isText(params[1])) {
             //literal text
             spreadsheet[rownum(params[0])][colnum(params[0])] = new CellText(params[1]);
         } else {
-            //expression, as the input for this project can't be syntactically invalid this is probably valid
-            //TODO is it actually always valid... -_-
-            spreadsheet[rownum(params[0])][colnum(params[0])] = new CellExpr(params[1]);
+            //number, it's the only option left. Syntax is "guaranteed" for double input
+            spreadsheet[rownum(params[0])][colnum(params[0])] = new CellNum(params[1]);
         }
         return null;
-    }
-
-    public boolean isNum(String input) {
-        //returns if the string is number literal
-        int numdots = 0;
-        for (int i = 0; i < input.length(); i++) {
-            //there can only be one decimal point dot thing
-            if ((!Character.isDigit(input.charAt(i)) && input.charAt(i) != '.') 
-                    || (numdots > 1 && input.charAt(i) == '.')) {
-                return false;
-            }
-            if (input.charAt(i) == '.') {
-                numdots++;
-            }
-        }
-        return true;
     }
 
     public boolean isText(String input) {
@@ -158,6 +140,8 @@ public class VisiCalc {
         //does the cell exist
         return input.indexOf(':') == -1
                 && input.indexOf(',') == -1
+                && input.length() > 1
+                && Character.isLetter(input.charAt(0))
                 && colnum(input) + 1 <= this.width
                 && rownum(input) + 1 <= this.height;
     }
