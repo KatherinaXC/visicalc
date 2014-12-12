@@ -26,7 +26,7 @@ public class CellNum extends Cell {
             return super.toString(width);
         }
         //otherwise, if there is something
-        String output = getVal() + "";
+        String output = String.valueOf(getVal());
         //trim a ".0"
         if (output.substring(output.length() - 2).equals(".0")) {
             output = output.substring(0, output.length() - 2);
