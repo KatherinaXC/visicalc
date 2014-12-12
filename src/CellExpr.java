@@ -3,7 +3,29 @@ public class CellExpr extends Cell{
         super(input);
     }
     public String toString(int width) {
-        //TODO eval and return this
-        return super.toString(width);
+        //if formula is NOTHING (cleared)
+        if (getFormula() == null) {
+            return super.toString(width);
+        }
+        //otherwise, if there is something
+        //TODO eval and such
+        String output = "EXPRESSION CELL";
+        if (output.length() < width) {
+            if (getAlignment().equals("left") || getAlignment().equals("auto")) {
+                //pad the right side
+                while (output.length() < width) {
+                    output += " ";
+                }
+            } else if (getAlignment().equals("right")) {
+                //pad the left side
+                while (output.length() < width) {
+                    output = " " + output;
+                }
+            }
+        } else if (output.length() > width) {
+            //always "left" aligned, truncate right
+            output = output.substring(0, width);
+        }
+        return output;
     }
 }

@@ -27,6 +27,11 @@ public class CellNum extends Cell {
         }
         //otherwise, if there is something
         String output = getVal() + "";
+        //trim a ".0"
+        if (output.substring(output.length() - 2).equals(".0")) {
+            output = output.substring(0, output.length() - 2);
+        }
+        //pad the actual stuff
         if (output.length() < width) {
             if (getAlignment().equals("left")) {
                 //pad the right side

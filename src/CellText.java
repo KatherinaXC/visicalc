@@ -1,7 +1,7 @@
 public class CellText extends Cell {
 
     public CellText(String input) {
-        super(input.substring(1, input.length() - 1));
+        super(input);
     }
 
     public String dump(int colwidth) {

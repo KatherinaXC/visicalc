@@ -121,19 +121,15 @@ public class VisiCalc {
         if (Character.isLetter(params[1].charAt(0))) {
             //expression or reference
             spreadsheet[rownum(params[0])][colnum(params[0])] = new CellExpr(params[1]);
-        } else if (isText(params[1])) {
+        } else if (params[1].charAt(0) == '"' && params[1].charAt(params[1].length() - 1) == '"') {
             //literal text
-            spreadsheet[rownum(params[0])][colnum(params[0])] = new CellText(params[1]);
+            spreadsheet[rownum(params[0])][colnum(params[0])] = new CellText(params[1].substring(1, params[1].length() - 1));
         } else {
+            //TODO figure out why there are strings with equal signs slipping past the previous test?
             //number, it's the only option left. Syntax is "guaranteed" for double input
             spreadsheet[rownum(params[0])][colnum(params[0])] = new CellNum(params[1]);
         }
         return null;
-    }
-
-    public boolean isText(String input) {
-        //returns if the string is text literal
-        return (input != null) && (input.charAt(0) == '"') && (input.charAt(input.length() - 1) == '"');
     }
 
     private boolean isACell(String input) {
