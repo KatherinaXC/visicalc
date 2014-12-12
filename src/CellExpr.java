@@ -3,7 +3,7 @@ public class CellExpr extends Cell{
         super(input);
     }
     public String toString(int width) {
-        String output = getFormula() + "";
-        return output;
+        //TODO eval and return this
+        return super.toString(width);
     }
 }

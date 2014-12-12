@@ -63,10 +63,16 @@ public class VisiCalc {
                 return "Invalid parameters";
             }
             String[] cellarray = getIndividualCells(input);
-            String output = cellarray[0].toUpperCase() + " = {" + spreadsheet[rownum(cellarray[0])][colnum(cellarray[0])].dump(colwidth[colnum(cellarray[0])]) + "}";
+            String output = cellarray[0].toUpperCase() 
+                    + " = {" 
+                    + spreadsheet[rownum(cellarray[0])][colnum(cellarray[0])].dump(colwidth[colnum(cellarray[0])]) 
+                    + "}";
             for (int i = 1; i < cellarray.length; i++) {
                 output += "\n";
-                output += cellarray[i].toUpperCase() + " = {" + spreadsheet[rownum(cellarray[i])][colnum(cellarray[i])].dump(colwidth[colnum(cellarray[i])]) + "}";
+                output += cellarray[i].toUpperCase() 
+                        + " = {" 
+                        + spreadsheet[rownum(cellarray[i])][colnum(cellarray[i])].dump(colwidth[colnum(cellarray[i])]) 
+                        + "}";
 
             }
             return output;
@@ -88,7 +94,9 @@ public class VisiCalc {
             //width command
             String[] inputarray = input.split(" ");
             //test if input column is valid
-            if (Character.toUpperCase(inputarray[1].charAt(0)) - 'A' + 1 > width) {
+            if (inputarray[1].length() != 1 
+                    ||  !Character.isLetter(inputarray[1].charAt(0))
+                    || Character.toUpperCase(inputarray[1].charAt(0)) - 'A' + 1 > width) {
                 return "That column does not exist";
             }
             //max possible width is 20
@@ -105,7 +113,7 @@ public class VisiCalc {
         //Assumed enter-assignment mode
         String[] params = input.split("=");
         params[0] = params[0].trim();
-        params[1] = params[2].trim();
+        params[1] = params[1].trim();
         if (!isACell(params[0])) {
             //Valid-cell error checking for LEFT SIDE ERRORS ONLY
             return "Cell reference, " + params[0] + ", is invalid";
@@ -130,7 +138,7 @@ public class VisiCalc {
         int numdots = 0;
         for (int i = 0; i < input.length(); i++) {
             //there can only be one decimal point dot thing
-            if (!Character.isDigit(input.charAt(i)) || (numdots > 0 && input.charAt(i) == '.')) {
+            if (!Character.isDigit(input.charAt(i)) || (numdots > 1 && input.charAt(i) == '.')) {
                 return false;
             }
         }

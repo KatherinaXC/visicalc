@@ -1,8 +1,9 @@
 public class CellNum extends Cell {
+
     public CellNum(String input) {
         super(input);
     }
-    
+
     public String dump(int colwidth) {
         String dumpformula = getFormula();
         //Dump for empty cells says is blank
@@ -14,16 +15,14 @@ public class CellNum extends Cell {
                 + "\", \"Alignment\" = \"" + getAlignment()
                 + "\", \"Width\" = \"" + colwidth + "\" ";
     }
-    
+
     public String toString(int width) {
-        String output = getFormula() + "";
         //if output is NOTHING (cleared)
-        if (output.equals("")) {
-            for (int i = 0; i < width; i++) {
-                output += " ";
-            }
-            return output;
+        if (getFormula() == null) {
+            return super.toString(width);
         }
+        //otherwise, if there is something
+        String output = getFormula();
         if (output.length() < width) {
             if (getAlignment().equals("left")) {
                 //pad the right side

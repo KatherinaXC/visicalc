@@ -1,4 +1,3 @@
-
 public class CellText extends Cell {
 
     public CellText(String input) {
@@ -18,14 +17,12 @@ public class CellText extends Cell {
     }
 
     public String toString(int width) {
-        String output = getFormula() + "";
-        //if output is NOTHING (cleared)
-        if (output.equals("")) {
-            for (int i = 0; i < width; i++) {
-                output += " ";
-            }
-            return output;
+        //if formula is NOTHING (cleared)
+        if (getFormula() == null) {
+            return super.toString(width);
         }
+        //otherwise, if there is something
+        String output = getFormula();
         if (output.length() < width) {
             if (getAlignment().equals("left") || getAlignment().equals("auto")) {
                 //pad the right side
