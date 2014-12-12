@@ -1,7 +1,26 @@
-public class CellExpr extends Cell{
-    public CellExpr(String input) {
+
+public class CellExpr extends Cell {
+
+    //must have access to entire spreadsheet to be able to calculate values
+    public CellExpr(String input, Cell[][] spreadsheet) {
         super(input);
     }
+    
+    public String dump(int colwidth) {
+        String dumpformula = getFormula();
+        //Dump for empty cells says is blank
+        if (dumpformula == null) {
+            dumpformula = "";
+        }
+        return " \"Formula\" = \"" + dumpformula
+                + "\", \"Value\" = \"" + calculate(dumpformula)
+                + "\", \"Alignment\" = \"" + getAlignment()
+                + "\", \"Width\" = \"" + colwidth + "\" ";
+    }
+
+    private String calculate(String input) {
+    }
+
     public String toString(int width) {
         //if formula is NOTHING (cleared)
         if (getFormula() == null) {
@@ -9,7 +28,7 @@ public class CellExpr extends Cell{
         }
         //otherwise, if there is something
         //TODO eval and such
-        String output = "EXPRESSION CELL";
+        String output = calculate(getFormula());
         if (output.length() < width) {
             if (getAlignment().equals("left") || getAlignment().equals("auto")) {
                 //pad the right side
