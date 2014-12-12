@@ -138,8 +138,12 @@ public class VisiCalc {
         int numdots = 0;
         for (int i = 0; i < input.length(); i++) {
             //there can only be one decimal point dot thing
-            if (!Character.isDigit(input.charAt(i)) || (numdots > 1 && input.charAt(i) == '.')) {
+            if ((!Character.isDigit(input.charAt(i)) && input.charAt(i) != '.') 
+                    || (numdots > 1 && input.charAt(i) == '.')) {
                 return false;
+            }
+            if (input.charAt(i) == '.') {
+                numdots++;
             }
         }
         return true;
