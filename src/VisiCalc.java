@@ -120,7 +120,7 @@ public class VisiCalc {
         //assign and create cells
         if (Character.isLetter(params[1].charAt(0))) {
             //expression or reference
-            spreadsheet[rownum(params[0])][colnum(params[0])] = new CellExpr(params[1]);
+            spreadsheet[rownum(params[0])][colnum(params[0])] = new CellExpr(params[1], spreadsheet);
         } else if (params[1].charAt(0) == '"') {
             //literal text
             spreadsheet[rownum(params[0])][colnum(params[0])] = new CellText(params[1].substring(1, params[1].length() - 1));

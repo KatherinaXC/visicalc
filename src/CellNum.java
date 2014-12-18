@@ -11,12 +11,15 @@ public class CellNum extends Cell {
             dumpformula = "";
         }
         return " \"Formula\" = \"" + dumpformula
-                + "\", \"Value\" = \"" + dumpformula
+                + "\", \"Value\" = \"" + getVal()
                 + "\", \"Alignment\" = \"" + getAlignment()
                 + "\", \"Width\" = \"" + colwidth + "\" ";
     }
 
     private Double getVal() {
+        if (getFormula().equals("")) {
+            return null;
+        }
         return Double.parseDouble(getFormula());
     }
 
