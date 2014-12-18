@@ -55,7 +55,7 @@ public class VisiCalc {
         if (Character.isLetter(formula.charAt(0)) || isExpr(formula)) {
             //expression or reference
             spreadsheet[rownum(cell)][colnum(cell)] = new CellExpr(formula, this);
-        } else if (formula.charAt(0) == '"') {
+        } else if (formula.charAt(0) == '"' && formula.charAt(formula.length() - 1) == '"') {
             //literal text
             spreadsheet[rownum(cell)][colnum(cell)] = new CellText(formula.substring(1, formula.length() - 1));
         } else {
@@ -178,12 +178,16 @@ public class VisiCalc {
 
     private boolean isExpr(String input) {
         //tests if a cell is an expression (add, subtract, mult, div)
-        return (input.charAt(0) != '"')
-                && (input.charAt(input.length() - 1) != '"')
+        return !(input.charAt(0) == '"' && input.charAt(input.length() - 1) == '"')
                 && (input.indexOf('+') != -1
                 || input.indexOf('-') != -1
                 || input.indexOf('*') != -1
                 || input.indexOf('/') != -1);
+    }
+    
+    public boolean isFilled(String input) {
+        return isACell(input) 
+                && spreadsheet[rownum(input)][colnum(input)].getValue() != null;
     }
 
     public String[] getIndividualCells(String input) {

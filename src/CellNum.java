@@ -8,7 +8,7 @@ public class CellNum extends Cell {
     }
     
     public String getValue() {
-        return String.valueOf(this.value);
+        return trimEnd(String.valueOf(this.value));
     }
     
     public String dump() {

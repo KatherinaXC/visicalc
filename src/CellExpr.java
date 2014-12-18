@@ -12,7 +12,7 @@ public class CellExpr extends Cell {
 
     public String getValue() {
         String input = getFormula();
-        if (input.indexOf('+') != -1) {
+        if (input.indexOf(" + ") != -1) {
             //addition
             String[] ops = input.split("\\+");
             ops[0] = ops[0].trim();
@@ -21,7 +21,7 @@ public class CellExpr extends Cell {
                 return testOperands(ops);
             }
             return trimEnd(getOperands(ops[0]) + getOperands(ops[1]) + "");
-        } else if (input.indexOf('-') != -1) {
+        } else if (input.indexOf(" - ") != -1) {
             //subtraction
             String[] ops = input.split("-");
             ops[0] = ops[0].trim();
@@ -30,7 +30,7 @@ public class CellExpr extends Cell {
                 return testOperands(ops);
             }
             return trimEnd(getOperands(ops[0]) - getOperands(ops[1]) + "");
-        } else if (input.indexOf('/') != 1) {
+        } else if (input.indexOf(" / ") != -1) {
             //division
             String[] ops = input.split("/");
             ops[0] = ops[0].trim();
@@ -41,8 +41,8 @@ public class CellExpr extends Cell {
             if (ops[1].equals("0") || sheet.getValue(ops[1]).equals("0")) {
                 return "#DIV/0!";
             }
-            return trimEnd(getOperands(ops[0]) + getOperands(ops[1]) + "");
-        } else if (input.indexOf('*') != -1) {
+            return trimEnd(getOperands(ops[0]) / getOperands(ops[1]) + "");
+        } else if (input.indexOf(" * ") != -1) {
             //multiplication
             String[] ops = input.split("\\*");
             ops[0] = ops[0].trim();
@@ -55,9 +55,23 @@ public class CellExpr extends Cell {
             //concat function
         } else if (input.toUpperCase().indexOf("COUNT(") == 0) {
             //count function
-        } else {
+        } else if (input.toUpperCase().indexOf("SUM(") == 0) {
             //sum function
+        } else if (input.toUpperCase().indexOf("UPPER(") == 0) {
+            //touppercase function
+        } else if (input.toUpperCase().indexOf("LENGTH(") == 0) {
+            //length function
+        } else if (input.toUpperCase().indexOf("POWER(") == 0) {
+            //power function
+        } else if (input.toUpperCase().indexOf("SQRT(") == 0) {
+            //square root function
         }
+        //assignment to another variable
+        if (!sheet.isACell(input.trim())) {
+            return "#REF!";
+        }
+        return sheet.getValue(input.trim());
+
     }
 
     public String dump() {
@@ -71,7 +85,11 @@ public class CellExpr extends Cell {
         for (String val : input) {
             if (isCellForm(val) && !sheet.isACell(val)) {
                 return "#REF!";
-            } else if ((!isNumber(val) && !isCellForm(val)) || (isCellForm(val) && !isNumber(sheet.getValue(val)))) {
+            } else if ((!isNumber(val) && !isCellForm(val)) 
+                    || !sheet.isFilled(val)
+                    || (isCellForm(val) 
+                    && !isNumber(sheet.getValue(val))) 
+                    && sheet.getValue(val).charAt(0) != '#') {
                 return "#VALUE!";
             } else if (sheet.getValue(val).equals("#DIV/0!")) {
                 return "#DIV/0!";
