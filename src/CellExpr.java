@@ -54,18 +54,25 @@ public class CellExpr extends Cell {
             return trimEnd(getOperands(ops[0]) * getOperands(ops[1]) + "");
         } else if (input.toUpperCase().indexOf("CONCAT(") == 0) {
             //concat function
+            //TODO
         } else if (input.toUpperCase().indexOf("COUNT(") == 0) {
             //count function
+            //TODO
         } else if (input.toUpperCase().indexOf("SUM(") == 0) {
             //sum function
+            //TODO
         } else if (input.toUpperCase().indexOf("UPPER(") == 0) {
             //touppercase function
+            //TODO
         } else if (input.toUpperCase().indexOf("LENGTH(") == 0) {
             //length function
+            //TODO
         } else if (input.toUpperCase().indexOf("POWER(") == 0) {
             //power function
+            //TODO
         } else if (input.toUpperCase().indexOf("SQRT(") == 0) {
             //square root function
+            //TODO
         }
         //assignment to another variable
         if (!sheet.isACell(input.trim())) {
