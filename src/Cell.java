@@ -2,6 +2,7 @@ public class Cell {
 
     private String formula;
     private String alignment = "auto";
+    private int width = 10;
 
     public Cell(String input) {
         setFormula(input);
@@ -11,20 +12,11 @@ public class Cell {
         this.formula = null;
     }
 
-    public void clear() {
-        this.formula = null;
-    }
-
-    public String dump(int colwidth) {
-        String dumpformula = this.formula;
-        //Dump for empty cells says is blank
-        if (this.formula == null) {
-            dumpformula = "";
-        }
-        return " \"Formula\" = \"" + dumpformula
-                + "\", \"Value\" = \"" + dumpformula
-                + "\", \"Alignment\" = \"" + this.alignment
-                + "\", \"Width\" = \"" + colwidth + "\" ";
+    public String dump() {
+        return " \"Input\" = \"" + ""
+                + "\", \"Value\" = \"" + ""
+                + "\", \"Alignment\" = \"" + getAlignment()
+                + "\", \"Width\" = \"" + getWidth() + "\" ";
     }
 
     public void align(String input) {
@@ -41,6 +33,15 @@ public class Cell {
     public void setFormula(String input) {
         this.formula = input.trim();
     }
+    
+    public void setWidth(int width) {
+        if (width < 0) {
+            width = 0;
+        } else if (width > 20) {
+            width = 20;
+        }
+        this.width = width;
+    }
 
     public String getFormula() {
         return this.formula;
@@ -49,13 +50,25 @@ public class Cell {
     public String getAlignment() {
         return this.alignment;
     }
+    
+    public int getWidth() {
+        return this.width;
+    }
+    
+    public String getValue() {
+        return null;
+    }
 
-    public String toString(int width) {
+    public String toString() {
         //This class is only going to be used for blank cells anyway, so that VisiCalc doesn't crash on "dump"
-        String output = "";
-        for (int i = 0; i < width; i++) {
-            output += " ";
+        return blankReturn(getWidth());
+    }
+    
+    public static String blankReturn(int length) {
+        String out = "";
+        for (int i = 0; i < length; i++) {
+            out += " ";
         }
-        return output;
+        return out;
     }
 }

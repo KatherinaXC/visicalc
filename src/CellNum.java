@@ -1,58 +1,54 @@
 public class CellNum extends Cell {
+    
+    private double value;
 
     public CellNum(String input) {
         super(input);
+        this.value = Double.parseDouble(getFormula());
     }
-
-    public String dump(int colwidth) {
-        String dumpformula = getFormula();
-        //Dump for empty cells says is blank
-        if (dumpformula == null) {
-            dumpformula = "";
-        }
-        return " \"Formula\" = \"" + dumpformula
-                + "\", \"Value\" = \"" + getVal()
+    
+    public String getValue() {
+        return String.valueOf(this.value);
+    }
+    
+    public String dump() {
+        return " \"Input\" = \"" + getFormula()
+                //so that the "value" is consistent with the displayed value
+                + "\", \"Value\" = \"" + trimEnd(String.valueOf(this.value))
                 + "\", \"Alignment\" = \"" + getAlignment()
-                + "\", \"Width\" = \"" + colwidth + "\" ";
+                + "\", \"Width\" = \"" + getWidth() + "\" ";
     }
 
-    private Double getVal() {
-        if (getFormula().equals("")) {
-            return null;
-        }
-        return Double.parseDouble(getFormula());
-    }
-
-    public String toString(int width) {
-        //if output is NOTHING (cleared)
-        if (getFormula() == null) {
-            return super.toString(width);
-        }
-        //otherwise, if there is something
-        String output = String.valueOf(getVal());
+    public String toString() {
+        String output = String.valueOf(this.value);
         //trim a ".0"
-        if (output.substring(output.length() - 2).equals(".0")) {
-            output = output.substring(0, output.length() - 2);
-        }
+        output = trimEnd(output);
         //pad the actual stuff
-        if (output.length() < width) {
+        if (output.length() < getWidth()) {
             if (getAlignment().equals("left")) {
                 //pad the right side
-                while (output.length() < width) {
+                while (output.length() < getWidth()) {
                     output += " ";
                 }
             } else if (getAlignment().equals("right") || getAlignment().equals("auto")) {
                 //pad the left side
-                while (output.length() < width) {
+                while (output.length() < getWidth()) {
                     output = " " + output;
                 }
             }
-        } else if (output.length() > width) {
+        } else if (output.length() > getWidth()) {
             output = "";
-            for (int i = 0; i < width; i++) {
+            for (int i = 0; i < getWidth(); i++) {
                 output += "#";
             }
         }
         return output;
+    }
+    
+    private static String trimEnd(String input) {
+        if (input.substring(input.length() - 2).equals(".0")) {
+            input = input.substring(0, input.length() - 2);
+        }
+        return input;
     }
 }
