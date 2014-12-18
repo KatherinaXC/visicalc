@@ -1,3 +1,4 @@
+
 public class VisiCalc {
 
     private Cell[][] spreadsheet;
@@ -52,12 +53,12 @@ public class VisiCalc {
             return "Cell reference, " + cell.trim() + ", is invalid";
         }
         //assign and create cells
-        if (Character.isLetter(formula.charAt(0)) || isExpr(formula)) {
-            //expression or reference
-            spreadsheet[rownum(cell)][colnum(cell)] = new CellExpr(formula, this);
-        } else if (formula.charAt(0) == '"' && formula.charAt(formula.length() - 1) == '"') {
+        if (formula.charAt(0) == '"' && formula.charAt(formula.length() - 1) == '"') {
             //literal text
             spreadsheet[rownum(cell)][colnum(cell)] = new CellText(formula.substring(1, formula.length() - 1));
+        } else if (Character.isLetter(formula.charAt(0)) || isExpr(formula)) {
+            //expression or reference
+            spreadsheet[rownum(cell)][colnum(cell)] = new CellExpr(formula, this);
         } else {
             //number, it's the only option left. Syntax is "guaranteed" for double input
             spreadsheet[rownum(cell)][colnum(cell)] = new CellNum(formula);
@@ -184,9 +185,9 @@ public class VisiCalc {
                 || (input.indexOf('*') != -1 && input.indexOf('*') != 0 && input.indexOf('*') != input.length() - 1)
                 || (input.indexOf('/') != -1 && input.indexOf('/') != 0 && input.indexOf('/') != input.length() - 1));
     }
-    
+
     public boolean isFilled(String input) {
-        return isACell(input) 
+        return isACell(input)
                 && spreadsheet[rownum(input)][colnum(input)].getValue() != null;
     }
 
@@ -205,7 +206,7 @@ public class VisiCalc {
         }
         return output;
     }
-    
+
     public String getValue(String location) {
         //gets the value of a certain cell
         if (!isACell(location)) {
