@@ -1,3 +1,4 @@
+
 import java.util.Scanner;
 
 public class CellExpr extends Cell {
@@ -70,6 +71,10 @@ public class CellExpr extends Cell {
         if (!sheet.isACell(input.trim())) {
             return "#REF!";
         }
+        String[] op = {input.trim()};
+        if (testOperands(op) != null) {
+            return testOperands(op);
+        }
         return sheet.getValue(input.trim());
 
     }
@@ -85,11 +90,9 @@ public class CellExpr extends Cell {
         for (String val : input) {
             if (isCellForm(val) && !sheet.isACell(val)) {
                 return "#REF!";
-            } else if ((!isNumber(val) && !isCellForm(val)) 
-                    || !sheet.isFilled(val)
-                    || (isCellForm(val) 
-                    && !isNumber(sheet.getValue(val))) 
-                    && sheet.getValue(val).charAt(0) != '#') {
+            } else if ((!isNumber(val) && !isCellForm(val))
+                    || (isCellForm(val) && !sheet.isFilled(val))
+                    || (isCellForm(val) && !isNumber(sheet.getValue(val))) && sheet.getValue(val).charAt(0) != '#') {
                 return "#VALUE!";
             } else if (sheet.getValue(val).equals("#DIV/0!")) {
                 return "#DIV/0!";

@@ -13,8 +13,8 @@ public class Cell {
     }
 
     public String dump() {
-        return " \"Input\" = \"" + ""
-                + "\", \"Value\" = \"" + ""
+        return " \"Input\" = \"" + getFormula()
+                + "\", \"Value\" = \"" + getFormula()
                 + "\", \"Alignment\" = \"" + getAlignment()
                 + "\", \"Width\" = \"" + getWidth() + "\" ";
     }
@@ -31,7 +31,7 @@ public class Cell {
     }
 
     public void setFormula(String input) {
-        this.formula = input.trim();
+        this.formula = input;
     }
     
     public void setWidth(int width) {

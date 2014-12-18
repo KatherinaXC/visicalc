@@ -297,7 +297,7 @@ public class VisiCalc {
             row += (rows + 1) + " ";
             //actual data:                
             for (int cols = 0; cols < width; cols++) {
-                //all cells have content, but "null" cells will return just blanks
+                //all cells have content, but "null" cells should return just blanks
                 row += spreadsheet[rows][cols].toString() + " ";
             }
             if (row.length() < 80) {
