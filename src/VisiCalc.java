@@ -49,7 +49,7 @@ public class VisiCalc {
         String formula = input.substring(input.indexOf("=") + 1).trim();
         if (!isACell(cell)) {
             //Valid-cell error checking for LEFT SIDE ERRORS ONLY
-            return "Cell reference, " + cell + ", is invalid";
+            return "Cell reference, " + cell.trim() + ", is invalid";
         }
         //assign and create cells
         if (Character.isLetter(formula.charAt(0)) || isExpr(formula)) {
@@ -74,7 +74,7 @@ public class VisiCalc {
         }
         //test if input is valid
         if (!isAParameter(input)) {
-            return "Cell reference, " + input + ", is invalid";
+            return "Cell reference, " + input.trim() + ", is invalid";
         }
         String[] cellarray = getIndividualCells(input);
         Cell blankcell = new Cell();
@@ -93,7 +93,7 @@ public class VisiCalc {
         }
         //test if input is valid
         if (!isAParameter(input)) {
-            return "Cell reference, " + input + ", is invalid";
+            return "Cell reference, " + input.trim() + ", is invalid";
         }
         String[] cellarray = getIndividualCells(input);
         String output = cellarray[0].toUpperCase()
@@ -118,7 +118,7 @@ public class VisiCalc {
         String params = input.substring(5, input.length() - alignment.length());
         //test if input is valid
         if (!isAParameter(params)) {
-            return "Cell reference, " + params + ", is invalid";
+            return "Cell reference, " + params.trim() + ", is invalid";
         }
         String[] cellarray = getIndividualCells(params);
         for (int i = 0; i < cellarray.length; i++) {
@@ -179,10 +179,10 @@ public class VisiCalc {
     private boolean isExpr(String input) {
         //tests if a cell is an expression (add, subtract, mult, div)
         return !(input.charAt(0) == '"' && input.charAt(input.length() - 1) == '"')
-                && (input.indexOf('+') != -1
-                || input.indexOf('-') != -1
-                || input.indexOf('*') != -1
-                || input.indexOf('/') != -1);
+                && ((input.indexOf('+') != -1 && input.indexOf('+') != 0 && input.indexOf('+') != input.length() - 1)
+                || (input.indexOf('-') != -1 && input.indexOf('-') != 0 && input.indexOf('-') != input.length() - 1)
+                || (input.indexOf('*') != -1 && input.indexOf('*') != 0 && input.indexOf('*') != input.length() - 1)
+                || (input.indexOf('/') != -1 && input.indexOf('/') != 0 && input.indexOf('/') != input.length() - 1));
     }
     
     public boolean isFilled(String input) {
@@ -205,11 +205,19 @@ public class VisiCalc {
         }
         return output;
     }
-
+    
     public String getValue(String location) {
         //gets the value of a certain cell
         if (!isACell(location)) {
-            return "Cell reference, " + location + ", is invalid";
+            return "Cell reference, " + location.trim() + ", is invalid";
+        }
+        return spreadsheet[rownum(location)][colnum(location)].toString();
+    }
+
+    public String getCellValue(String location) {
+        //gets the value of a certain cell
+        if (!isACell(location)) {
+            return "Cell reference, " + location.trim() + ", is invalid";
         }
         return spreadsheet[rownum(location)][colnum(location)].getValue();
     }

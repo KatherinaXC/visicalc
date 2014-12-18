@@ -39,7 +39,7 @@ public class CellExpr extends Cell {
             if (testOperands(ops) != null) {
                 return testOperands(ops);
             }
-            if (ops[1].equals("0") || sheet.getValue(ops[1]).equals("0")) {
+            if (ops[1].equals("0") || sheet.getCellValue(ops[1]).equals("0")) {
                 return "#DIV/0!";
             }
             return trimEnd(getOperands(ops[0]) / getOperands(ops[1]) + "");
@@ -75,7 +75,7 @@ public class CellExpr extends Cell {
         if (testOperands(op) != null) {
             return testOperands(op);
         }
-        return sheet.getValue(input.trim());
+        return sheet.getCellValue(input.trim());
 
     }
 
@@ -92,13 +92,13 @@ public class CellExpr extends Cell {
                 return "#REF!";
             } else if ((!isNumber(val) && !isCellForm(val))
                     || (isCellForm(val) && !sheet.isFilled(val))
-                    || (isCellForm(val) && !isNumber(sheet.getValue(val))) && sheet.getValue(val).charAt(0) != '#') {
+                    || (isCellForm(val) && !isNumber(sheet.getCellValue(val))) && sheet.getCellValue(val).charAt(0) != '#') {
                 return "#VALUE!";
-            } else if (sheet.getValue(val).equals("#DIV/0!")) {
+            } else if (sheet.getCellValue(val).equals("#DIV/0!")) {
                 return "#DIV/0!";
-            } else if (sheet.getValue(val).equals("#REF!")) {
+            } else if (sheet.getCellValue(val).equals("#REF!")) {
                 return "#REF!";
-            } else if (sheet.getValue(val).equals("#VALUE!")) {
+            } else if (sheet.getCellValue(val).equals("#VALUE!")) {
                 return "#VALUE!";
             }
         }
@@ -109,7 +109,7 @@ public class CellExpr extends Cell {
         if (isNumber(input)) {
             return Double.parseDouble(input);
         }
-        return Double.parseDouble(sheet.getValue(input));
+        return Double.parseDouble(sheet.getCellValue(input));
     }
 
     private static boolean isCellForm(String input) {

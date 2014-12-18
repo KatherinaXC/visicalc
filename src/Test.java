@@ -572,7 +572,7 @@ public class Test {
         
         for (int i = 0; i < results.length; i++) {
             try {
-            	CheckValue(spreadsheet.getValue(results[i].getCell()), results[i].getValue(), results[i].getCell());
+            	CheckValue(spreadsheet.getCellValue(results[i].getCell()), results[i].getValue(), results[i].getCell());
             }
             catch (TestWarning tw) {
             	warnings += "\n        result " + i + ", " + tw.getMessage();
