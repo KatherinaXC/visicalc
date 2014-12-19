@@ -94,18 +94,27 @@ public class CellExpr extends Cell {
     }
 
     private String testOperands(String[] input) {
+        //returns null if the string is a valid operand
         for (String val : input) {
-            if (isCellForm(val) && !sheet.isACell(val)) {
-                return "#REF!";
-            } else if ((!isNumber(val) && !isCellForm(val))
-                    || (isCellForm(val) && !sheet.isFilled(val))
-                    || (isCellForm(val) && !isNumber(sheet.getCellValue(val))) && sheet.getCellValue(val).charAt(0) != '#') {
-                return "#VALUE!";
-            } else if (sheet.getCellValue(val).equals("#DIV/0!")) {
-                return "#DIV/0!";
-            } else if (sheet.getCellValue(val).equals("#REF!")) {
-                return "#REF!";
-            } else if (sheet.getCellValue(val).equals("#VALUE!")) {
+            if (isNumber(val)) {
+                return null;
+            } else if (isCellForm(val)) {
+                if (!sheet.isACell(val)) {
+                    return "#REF!";
+                } else if (!sheet.isFilled(val)) {
+                    return "#VALUE!";
+                } else if (sheet.getCellValue(val).equals("#DIV/0!")) {
+                    return "#DIV/0!";
+                } else if (sheet.getCellValue(val).equals("#REF!")) {
+                    return "#REF!";
+                } else if (sheet.getCellValue(val).equals("#VALUE!")) {
+                    return "#VALUE!";
+                } else if (!isNumber(sheet.getCellValue(val))) {
+                    return "#VALUE!";
+                } else {
+                    return null;
+                }
+            } else {
                 return "#VALUE!";
             }
         }
@@ -120,7 +129,8 @@ public class CellExpr extends Cell {
     }
 
     private static boolean isCellForm(String input) {
-        return Character.isLetter(input.charAt(0))
+        return input.length() >= 2
+                && Character.isLetter(input.charAt(0))
                 && isNumber(input.substring(1));
     }
 
