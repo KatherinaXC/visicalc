@@ -1,4 +1,6 @@
 
+import java.util.Scanner;
+
 public class VisiCalc {
 
     private Cell[][] spreadsheet;
@@ -58,7 +60,13 @@ public class VisiCalc {
             spreadsheet[rownum(cell)][colnum(cell)] = new CellText(formula.substring(1, formula.length() - 1));
         } else if (Character.isLetter(formula.charAt(0)) || isExpr(formula)) {
             //expression or reference
-            spreadsheet[rownum(cell)][colnum(cell)] = new CellExpr(formula, this);
+            if (isCellForm(formula)) {
+                //single reference
+                spreadsheet[rownum(cell)][colnum(cell)] = new CellRef(formula, this);
+            } else {
+                //command op or binary op
+                spreadsheet[rownum(cell)][colnum(cell)] = new CellExpr(formula, this);
+            }
         } else {
             //number, it's the only option left. Syntax is "guaranteed" for double input
             spreadsheet[rownum(cell)][colnum(cell)] = new CellNum(formula);
@@ -191,6 +199,17 @@ public class VisiCalc {
                 && spreadsheet[rownum(input)][colnum(input)].getValue() != null;
     }
 
+    private static boolean isNumber(String input) {
+        Scanner read = new Scanner(input);
+        return read.hasNextDouble();
+    }
+
+    private static boolean isCellForm(String input) {
+        return input.length() >= 2
+                && Character.isLetter(input.charAt(0))
+                && isNumber(input.substring(1));
+    }
+
     public String[] getIndividualCells(String input) {
         //returns a string array with all combinations of cells
         String[] params = input.split(",");
@@ -208,7 +227,7 @@ public class VisiCalc {
     }
 
     public String getValue(String location) {
-        //gets the value of a certain cell
+        //gets the printed value of a certain cell
         if (!isACell(location)) {
             return "Cell reference, " + location.trim() + ", is invalid";
         }

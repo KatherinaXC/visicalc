@@ -13,27 +13,28 @@ public class CellExpr extends Cell {
 
     public String getValue() {
         String input = getFormula();
+        String[] ops;
         if (input.indexOf(" + ") != -1) {
             //addition
-            String[] ops = input.split("\\+");
+            ops = input.split("\\+");
             ops[0] = ops[0].trim();
             ops[1] = ops[1].trim();
             if (testOperands(ops) != null) {
                 return testOperands(ops);
             }
-            return trimEnd(getOperands(ops[0]) + getOperands(ops[1]) + "");
+            return trimEnd(getDoubleOperands(ops[0]) + getDoubleOperands(ops[1]) + "");
         } else if (input.indexOf(" - ") != -1) {
             //subtraction
-            String[] ops = input.split("-");
+            ops = input.split("-");
             ops[0] = ops[0].trim();
             ops[1] = ops[1].trim();
             if (testOperands(ops) != null) {
                 return testOperands(ops);
             }
-            return trimEnd(getOperands(ops[0]) - getOperands(ops[1]) + "");
+            return trimEnd(getDoubleOperands(ops[0]) - getDoubleOperands(ops[1]) + "");
         } else if (input.indexOf(" / ") != -1) {
             //division
-            String[] ops = input.split("/");
+            ops = input.split("/");
             ops[0] = ops[0].trim();
             ops[1] = ops[1].trim();
             if (testOperands(ops) != null) {
@@ -42,48 +43,55 @@ public class CellExpr extends Cell {
             if (ops[1].equals("0") || sheet.getCellValue(ops[1]).equals("0")) {
                 return "#DIV/0!";
             }
-            return trimEnd(getOperands(ops[0]) / getOperands(ops[1]) + "");
+            return trimEnd(getDoubleOperands(ops[0]) / getDoubleOperands(ops[1]) + "");
         } else if (input.indexOf(" * ") != -1) {
             //multiplication
-            String[] ops = input.split("\\*");
+            ops = input.split("\\*");
             ops[0] = ops[0].trim();
             ops[1] = ops[1].trim();
             if (testOperands(ops) != null) {
                 return testOperands(ops);
             }
-            return trimEnd(getOperands(ops[0]) * getOperands(ops[1]) + "");
+            return trimEnd(getDoubleOperands(ops[0]) * getDoubleOperands(ops[1]) + "");
         } else if (input.toUpperCase().indexOf("CONCAT(") == 0) {
             //concat function
+            input = input.substring(7, input.length() - 1);
+            ops = input.split(",");
             //TODO
         } else if (input.toUpperCase().indexOf("COUNT(") == 0) {
             //count function
+            input = input.substring(6, input.length() - 1);
+            ops = input.split(",");
             //TODO
         } else if (input.toUpperCase().indexOf("SUM(") == 0) {
             //sum function
+            input = input.substring(4, input.length() - 1);
+            ops = input.split(",");
             //TODO
         } else if (input.toUpperCase().indexOf("UPPER(") == 0) {
             //touppercase function
+            input = input.substring(6, input.length() - 1);
+            ops = new String[]{input.trim().substring(1, input.length())};
             //TODO
         } else if (input.toUpperCase().indexOf("LENGTH(") == 0) {
             //length function
+            input = input.substring(7, input.length() - 1);
+            ops = new String[]{input.trim().substring(1, input.length())};
             //TODO
         } else if (input.toUpperCase().indexOf("POWER(") == 0) {
             //power function
+            input = input.substring(6, input.length() - 1);
+            ops = input.split(",");
+            ops[0] = ops[0].trim();
+            ops[1] = ops[1].trim();
             //TODO
         } else if (input.toUpperCase().indexOf("SQRT(") == 0) {
             //square root function
+            input = input.substring(5, input.length());
+            ops = new String[]{input.trim()};
             //TODO
         }
-        //assignment to another variable
-        if (!sheet.isACell(input.trim())) {
-            return "#REF!";
-        }
-        String[] op = {input.trim()};
-        if (testOperands(op) != null) {
-            return testOperands(op);
-        }
         return sheet.getCellValue(input.trim());
-
     }
 
     public String dump() {
@@ -121,17 +129,29 @@ public class CellExpr extends Cell {
         return null;
     }
 
-    private double getOperands(String input) {
+    private double getDoubleOperands(String input) {
         if (isNumber(input)) {
             return Double.parseDouble(input);
         }
         return Double.parseDouble(sheet.getCellValue(input));
+    }
+    
+    private String getTextOperands(String input) {
+        if (isTextForm(input)) {
+            return input.substring(1, input.length() - 1);
+        }
+        return sheet.getCellValue(input);
     }
 
     private static boolean isCellForm(String input) {
         return input.length() >= 2
                 && Character.isLetter(input.charAt(0))
                 && isNumber(input.substring(1));
+    }
+    private static boolean isTextForm(String input) {
+        return input.length() > 1 
+                && input.charAt(0) == '"'
+                && input.charAt(input.length() - 1) == '"';
     }
 
     private static boolean isNumber(String input) {
