@@ -3,9 +3,11 @@ public class Cell {
     private String formula;
     private String alignment = "auto";
     private int width = 10;
+    VisiCalc sheet;
 
-    public Cell(String input) {
+    public Cell(String input, VisiCalc sheet) {
         setFormula(input);
+        this.sheet = sheet;
     }
 
     public Cell() {

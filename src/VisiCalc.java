@@ -57,7 +57,7 @@ public class VisiCalc {
         //assign and create cells
         if (formula.charAt(0) == '"' && formula.charAt(formula.length() - 1) == '"') {
             //literal text
-            spreadsheet[rownum(cell)][colnum(cell)] = new CellText(formula.substring(1, formula.length() - 1));
+            spreadsheet[rownum(cell)][colnum(cell)] = new CellText(formula.substring(1, formula.length() - 1), this);
         } else if (Character.isLetter(formula.charAt(0)) || isExpr(formula)) {
             //expression or reference
             if (isCellForm(formula)) {
@@ -65,11 +65,11 @@ public class VisiCalc {
                 spreadsheet[rownum(cell)][colnum(cell)] = new CellRef(formula, this);
             } else {
                 //command op or binary op
-                spreadsheet[rownum(cell)][colnum(cell)] = new CellExpr(formula, this);
+                spreadsheet[rownum(cell)][colnum(cell)] = new CellBin(formula, this);
             }
         } else {
             //number, it's the only option left. Syntax is "guaranteed" for double input
-            spreadsheet[rownum(cell)][colnum(cell)] = new CellNum(formula);
+            spreadsheet[rownum(cell)][colnum(cell)] = new CellNum(formula, this);
         }
         return null;
     }
@@ -232,6 +232,13 @@ public class VisiCalc {
             return "Cell reference, " + location.trim() + ", is invalid";
         }
         return spreadsheet[rownum(location)][colnum(location)].toString();
+    }
+
+    public String getDump(String location) {
+        return location.toUpperCase()
+                + " = {"
+                + spreadsheet[rownum(location)][colnum(location)].dump()
+                + "}";
     }
 
     public String getCellValue(String location) {

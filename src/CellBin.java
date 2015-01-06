@@ -1,14 +1,12 @@
 
 import java.util.Scanner;
 
-public class CellExpr extends Cell {
+public class CellBin extends CellNum {
 
-    VisiCalc sheet;
 
     //must have access to entire spreadsheet to be able to calculate values
-    public CellExpr(String input, VisiCalc sheet) {
-        super(input);
-        this.sheet = sheet;
+    public CellBin(String input, VisiCalc sheet) {
+        super(input, sheet);
     }
 
     public String getValue() {
@@ -55,31 +53,37 @@ public class CellExpr extends Cell {
             return trimEnd(getDoubleOperands(ops[0]) * getDoubleOperands(ops[1]) + "");
         } else if (input.toUpperCase().indexOf("CONCAT(") == 0) {
             //concat function
+            //returns string
             input = input.substring(7, input.length() - 1);
             ops = input.split(",");
             //TODO
         } else if (input.toUpperCase().indexOf("COUNT(") == 0) {
             //count function
+            //returns number
             input = input.substring(6, input.length() - 1);
             ops = input.split(",");
             //TODO
         } else if (input.toUpperCase().indexOf("SUM(") == 0) {
             //sum function
+            //returns number
             input = input.substring(4, input.length() - 1);
             ops = input.split(",");
             //TODO
         } else if (input.toUpperCase().indexOf("UPPER(") == 0) {
             //touppercase function
+            //returns string
             input = input.substring(6, input.length() - 1);
             ops = new String[]{input.trim().substring(1, input.length())};
             //TODO
         } else if (input.toUpperCase().indexOf("LENGTH(") == 0) {
             //length function
+            //returns number
             input = input.substring(7, input.length() - 1);
             ops = new String[]{input.trim().substring(1, input.length())};
             //TODO
         } else if (input.toUpperCase().indexOf("POWER(") == 0) {
             //power function
+            //returns number
             input = input.substring(6, input.length() - 1);
             ops = input.split(",");
             ops[0] = ops[0].trim();
@@ -87,6 +91,7 @@ public class CellExpr extends Cell {
             //TODO
         } else if (input.toUpperCase().indexOf("SQRT(") == 0) {
             //square root function
+            //returns number
             input = input.substring(5, input.length());
             ops = new String[]{input.trim()};
             //TODO
@@ -135,7 +140,7 @@ public class CellExpr extends Cell {
         }
         return Double.parseDouble(sheet.getCellValue(input));
     }
-    
+
     private String getTextOperands(String input) {
         if (isTextForm(input)) {
             return input.substring(1, input.length() - 1);
@@ -148,8 +153,9 @@ public class CellExpr extends Cell {
                 && Character.isLetter(input.charAt(0))
                 && isNumber(input.substring(1));
     }
+
     private static boolean isTextForm(String input) {
-        return input.length() > 1 
+        return input.length() > 1
                 && input.charAt(0) == '"'
                 && input.charAt(input.length() - 1) == '"';
     }
@@ -157,37 +163,6 @@ public class CellExpr extends Cell {
     private static boolean isNumber(String input) {
         Scanner read = new Scanner(input);
         return read.hasNextDouble();
-    }
-
-    public String toString() {
-        //return value
-        String output = getValue();
-        String tempalignment = getAlignment();
-        if (output.length() < getWidth()) {
-            if (tempalignment.equals("auto")) {
-                //test if it's number or string
-                if (isNumber(output)) {
-                    tempalignment = "right";
-                } else {
-                    tempalignment = "left";
-                }
-            }
-            if (tempalignment.equals("left")) {
-                //pad the right side
-                while (output.length() < getWidth()) {
-                    output += " ";
-                }
-            } else if (tempalignment.equals("right")) {
-                //pad the left side
-                while (output.length() < getWidth()) {
-                    output = " " + output;
-                }
-            }
-        } else if (output.length() > getWidth()) {
-            //always "left" aligned, truncate right
-            output = output.substring(0, getWidth());
-        }
-        return output;
     }
 
     private static String trimEnd(String input) {

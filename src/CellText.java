@@ -1,7 +1,7 @@
 public class CellText extends Cell {
 
-    public CellText(String input) {
-        super(input);
+    public CellText(String input, VisiCalc sheet) {
+        super(input, sheet);
     }
     
     public String getValue() {

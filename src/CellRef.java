@@ -5,8 +5,7 @@ public class CellRef extends Cell {
 
     //must have access to entire spreadsheet to be able to calculate values
     public CellRef(String input, VisiCalc sheet) {
-        super(input);
-        this.sheet = sheet;
+        super(input, sheet);
     }
 
     public String getValue() {
@@ -16,7 +15,11 @@ public class CellRef extends Cell {
         }
         return sheet.getCellValue(input.trim());
     }
-    
+
+    public String dump() {
+        return sheet.getDump(getFormula().trim());
+    }
+
     public String toString() {
         return sheet.getValue(getFormula());
     }

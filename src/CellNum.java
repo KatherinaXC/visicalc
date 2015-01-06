@@ -2,8 +2,8 @@ public class CellNum extends Cell {
     
     private double value;
 
-    public CellNum(String input) {
-        super(input);
+    public CellNum(String input, VisiCalc sheet) {
+        super(input, sheet);
         this.value = Double.parseDouble(getFormula());
     }
     
@@ -20,9 +20,7 @@ public class CellNum extends Cell {
     }
 
     public String toString() {
-        String output = String.valueOf(this.value);
-        //trim a ".0"
-        output = trimEnd(output);
+        String output = getValue();
         //pad the actual stuff
         if (output.length() < getWidth()) {
             if (getAlignment().equals("left")) {
