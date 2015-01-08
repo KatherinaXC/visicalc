@@ -1,12 +1,12 @@
 
 import java.util.Scanner;
 
-
 class Cell {
 
     private String formula;
     private String alignment = "auto";
     private int width;
+    private boolean autoleft = false;
     VisiCalc sheet;
 
     public Cell(String input, VisiCalc sheet, int width) {
@@ -46,6 +46,10 @@ class Cell {
         this.width = width;
     }
 
+    public void setAutoLeft(boolean autoleft) {
+        this.autoleft = autoleft;
+    }
+
     public String getFormula() {
         return this.formula;
     }
@@ -58,13 +62,49 @@ class Cell {
         return this.width;
     }
 
+    public boolean getAutoLeft() {
+        return autoleft;
+    }
+
     public String getValue() {
         return null;
     }
 
     public String toString() {
-        //This class is only going to be used for blank cells anyway, so that VisiCalc doesn't crash on "dump"
-        return blankReturn(getWidth());
+        //in Cell class always run this
+        if (sheet == null) {
+            return blankReturn(getWidth());
+        }
+        //the rest of its subclasses
+        String output = getFormula();
+        if (output.charAt(0) == '"' && output.charAt(output.length() - 1) == '"') {
+            output = output.substring(1, getFormula().length() - 1);
+        }
+        if (output.length() < getWidth()) {
+            if (getAlignment().equals("left") || (getAlignment().equals("auto") && getAutoLeft() == true)) {
+                //pad the right side
+                while (output.length() < getWidth()) {
+                    output += " ";
+                }
+            } else if (getAlignment().equals("right") || (getAlignment().equals("auto") && getAutoLeft() == false)) {
+                //pad the left side
+                while (output.length() < getWidth()) {
+                    output = " " + output;
+                }
+            }
+        } else if (output.length() > getWidth()) {
+            if (getAutoLeft()) {
+                //if it is auto left, then it's text and should truncate
+                output = output.substring(0, getWidth());
+            } else {
+                //if not, it's a number and should use ####
+                output = "";
+                for (int i = 0; i < getWidth(); i++) {
+                    output += "#";
+                }
+            }
+        }
+        return output;
     }
 
     public static String blankReturn(int length) {
@@ -102,7 +142,7 @@ class Cell {
         }
         return null;
     }
-    
+
     public static boolean isNumber(String input) {
         Scanner read = new Scanner(input);
         return read.hasNextDouble();

@@ -87,7 +87,7 @@ public class VisiCalc {
             //function or reference
             if (isCellForm(cellformula)) {
                 //single reference
-                //TODO
+                sheet[rownum(celladdress)][colnum(celladdress)] = new CellRef(cellformula, this, oldwidth);
             } else {
                 //command op
                 //TODO

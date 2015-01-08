@@ -18,30 +18,6 @@ public class CellNum extends Cell {
         return trimEnd(String.valueOf(Double.parseDouble(getFormula())));
     }
 
-    public String toString() {
-        String output = getValue();
-        //pad the actual stuff
-        if (output.length() < getWidth()) {
-            if (getAlignment().equals("left")) {
-                //pad the right side
-                while (output.length() < getWidth()) {
-                    output += " ";
-                }
-            } else if (getAlignment().equals("right") || getAlignment().equals("auto")) {
-                //pad the left side
-                while (output.length() < getWidth()) {
-                    output = " " + output;
-                }
-            }
-        } else if (output.length() > getWidth()) {
-            output = "";
-            for (int i = 0; i < getWidth(); i++) {
-                output += "#";
-            }
-        }
-        return output;
-    }
-
     public static String trimEnd(String input) {
         if (input.substring(input.length() - 2).equals(".0")) {
             input = input.substring(0, input.length() - 2);
