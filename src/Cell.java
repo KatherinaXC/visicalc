@@ -20,8 +20,14 @@ class Cell {
     }
 
     public String getDump() {
+        if (getValue() == null) {
+            return " \"Input\" = \"" + getFormula()
+                    + "\", \"Value\" = \"" + getFormula()
+                    + "\", \"Alignment\" = \"" + getAlignment()
+                    + "\", \"Width\" = \"" + getWidth() + "\" ";
+        }
         return " \"Input\" = \"" + getFormula()
-                + "\", \"Value\" = \"" + getFormula()
+                + "\", \"Value\" = \"" + getValue()
                 + "\", \"Alignment\" = \"" + getAlignment()
                 + "\", \"Width\" = \"" + getWidth() + "\" ";
     }

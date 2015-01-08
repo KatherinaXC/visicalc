@@ -8,10 +8,22 @@ public class CellRef extends Cell {
     }
     
     public String getValue() {
-        String input = getFormula();
-        if (!sheet.isACell(input.trim())) {
+        if (!sheet.isACell(getFormula())) {
             return "#REF!";
         }
-        return sheet.getCellValue(input.trim());
+        if (!sheet.isFilled(getFormula())) {
+            return "#VALUE!";
+        }
+        return sheet.getCellValue(getFormula());
+    }
+    
+    public String toString() {
+        if (!sheet.isACell(getFormula())) {
+            return "#REF!";
+        }
+        if (!sheet.isFilled(getFormula())) {
+            return "#VALUE!";
+        }
+        return sheet.getValue(getFormula());
     }
 }
