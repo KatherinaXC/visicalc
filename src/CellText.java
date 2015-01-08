@@ -6,12 +6,12 @@ public class CellText extends Cell {
     }
 
     public String getValue() {
-        return getFormula();
+        return "\"" + getFormula() + "\"";
     }
 
     public String toString() {
         //otherwise, if there is something
-        String output = getFormula();
+        String output = getFormula().substring(1, getFormula().length() - 1);
         if (output.length() < getWidth()) {
             if (getAlignment().equals("left") || getAlignment().equals("auto")) {
                 //pad the right side
