@@ -1,22 +1,21 @@
+
 public class CellNum extends Cell {
-    
-    private double value;
 
     public CellNum(String input, VisiCalc sheet) {
+        //the sheet isn't actually used in this class, as this is a static cell
         super(input, sheet);
-        this.value = Double.parseDouble(getFormula());
     }
-    
-    public String getValue() {
-        return trimEnd(String.valueOf(this.value));
-    }
-    
-    public String dump() {
+
+    public String getDump() {
         return " \"Input\" = \"" + getFormula()
                 //so that the "value" is consistent with the displayed value
-                + "\", \"Value\" = \"" + trimEnd(String.valueOf(this.value))
+                + "\", \"Value\" = \"" + getValue()
                 + "\", \"Alignment\" = \"" + getAlignment()
                 + "\", \"Width\" = \"" + getWidth() + "\" ";
+    }
+
+    public String getValue() {
+        return trimEnd(String.valueOf(Double.parseDouble(getFormula())));
     }
 
     public String toString() {
@@ -42,8 +41,8 @@ public class CellNum extends Cell {
         }
         return output;
     }
-    
-    private static String trimEnd(String input) {
+
+    public static String trimEnd(String input) {
         if (input.substring(input.length() - 2).equals(".0")) {
             input = input.substring(0, input.length() - 2);
         }

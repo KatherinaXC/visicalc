@@ -1,174 +1,94 @@
 
-import java.util.Scanner;
-
 public class CellBin extends CellNum {
 
+    private String[] operands;
+    private double[] opints = new double[2];
+    private char operator;
 
-    //must have access to entire spreadsheet to be able to calculate values
     public CellBin(String input, VisiCalc sheet) {
         super(input, sheet);
+        String[] ops = input.split(" ");
+        this.operands = new String[]{ops[0], ops[2]};
+        this.operator = ops[1].charAt(0);
     }
 
     public String getValue() {
-        String input = getFormula();
-        String[] ops;
-        if (input.indexOf(" + ") != -1) {
-            //addition
-            ops = input.split("\\+");
-            ops[0] = ops[0].trim();
-            ops[1] = ops[1].trim();
-            if (testOperands(ops) != null) {
-                return testOperands(ops);
-            }
-            return trimEnd(getDoubleOperands(ops[0]) + getDoubleOperands(ops[1]) + "");
-        } else if (input.indexOf(" - ") != -1) {
-            //subtraction
-            ops = input.split("-");
-            ops[0] = ops[0].trim();
-            ops[1] = ops[1].trim();
-            if (testOperands(ops) != null) {
-                return testOperands(ops);
-            }
-            return trimEnd(getDoubleOperands(ops[0]) - getDoubleOperands(ops[1]) + "");
-        } else if (input.indexOf(" / ") != -1) {
-            //division
-            ops = input.split("/");
-            ops[0] = ops[0].trim();
-            ops[1] = ops[1].trim();
-            if (testOperands(ops) != null) {
-                return testOperands(ops);
-            }
-            if (ops[1].equals("0") || sheet.getCellValue(ops[1]).equals("0")) {
-                return "#DIV/0!";
-            }
-            return trimEnd(getDoubleOperands(ops[0]) / getDoubleOperands(ops[1]) + "");
-        } else if (input.indexOf(" * ") != -1) {
-            //multiplication
-            ops = input.split("\\*");
-            ops[0] = ops[0].trim();
-            ops[1] = ops[1].trim();
-            if (testOperands(ops) != null) {
-                return testOperands(ops);
-            }
-            return trimEnd(getDoubleOperands(ops[0]) * getDoubleOperands(ops[1]) + "");
-        } else if (input.toUpperCase().indexOf("CONCAT(") == 0) {
-            //concat function
-            //returns string
-            input = input.substring(7, input.length() - 1);
-            ops = input.split(",");
-            //TODO
-        } else if (input.toUpperCase().indexOf("COUNT(") == 0) {
-            //count function
-            //returns number
-            input = input.substring(6, input.length() - 1);
-            ops = input.split(",");
-            //TODO
-        } else if (input.toUpperCase().indexOf("SUM(") == 0) {
-            //sum function
-            //returns number
-            input = input.substring(4, input.length() - 1);
-            ops = input.split(",");
-            //TODO
-        } else if (input.toUpperCase().indexOf("UPPER(") == 0) {
-            //touppercase function
-            //returns string
-            input = input.substring(6, input.length() - 1);
-            ops = new String[]{input.trim().substring(1, input.length())};
-            //TODO
-        } else if (input.toUpperCase().indexOf("LENGTH(") == 0) {
-            //length function
-            //returns number
-            input = input.substring(7, input.length() - 1);
-            ops = new String[]{input.trim().substring(1, input.length())};
-            //TODO
-        } else if (input.toUpperCase().indexOf("POWER(") == 0) {
-            //power function
-            //returns number
-            input = input.substring(6, input.length() - 1);
-            ops = input.split(",");
-            ops[0] = ops[0].trim();
-            ops[1] = ops[1].trim();
-            //TODO
-        } else if (input.toUpperCase().indexOf("SQRT(") == 0) {
-            //square root function
-            //returns number
-            input = input.substring(5, input.length());
-            ops = new String[]{input.trim()};
-            //TODO
+        String error = testOperands(operands);
+        if (error != null) {
+            return error;
         }
-        return sheet.getCellValue(input.trim());
+        if (operator == '+') {
+            return calcAdd();
+        } else if (operator == '-') {
+            return calcSubtract();
+        } else if (operator == '*') {
+            return calcMultiply();
+        } else { //if operator == '/'
+            return calcDivide();
+        }
     }
 
-    public String dump() {
-        return " \"Input\" = \"" + getFormula()
-                + "\", \"Value\" = \"" + getValue()
-                + "\", \"Alignment\" = \"" + getAlignment()
-                + "\", \"Width\" = \"" + getWidth() + "\" ";
-    }
-
-    private String testOperands(String[] input) {
-        //returns null if the string is a valid operand
-        for (String val : input) {
-            if (isNumber(val)) {
-                return null;
-            } else if (isCellForm(val)) {
-                if (!sheet.isACell(val)) {
-                    return "#REF!";
-                } else if (!sheet.isFilled(val)) {
-                    return "#VALUE!";
-                } else if (sheet.getCellValue(val).equals("#DIV/0!")) {
-                    return "#DIV/0!";
-                } else if (sheet.getCellValue(val).equals("#REF!")) {
-                    return "#REF!";
-                } else if (sheet.getCellValue(val).equals("#VALUE!")) {
-                    return "#VALUE!";
-                } else if (!isNumber(sheet.getCellValue(val))) {
-                    return "#VALUE!";
-                } else {
-                    return null;
-                }
+    private String calcAdd() {
+        for (int i = 0; i < operands.length; i++) {
+            if (isNumber(operands[i])) {
+                opints[i] = Double.parseDouble(operands[i]);
             } else {
-                return "#VALUE!";
+                //if a cell reference
+                if (!isNumber(sheet.getCellValue(operands[i]))) {
+                    return sheet.getCellValue(operands[i]);
+                }
+                opints[i] = Double.parseDouble(sheet.getCellValue(operands[i]));
             }
         }
-        return null;
+        return trimEnd(String.valueOf(opints[0] + opints[1]));
     }
 
-    private double getDoubleOperands(String input) {
-        if (isNumber(input)) {
-            return Double.parseDouble(input);
+    private String calcSubtract() {
+        for (int i = 0; i < operands.length; i++) {
+            if (isNumber(operands[i])) {
+                opints[i] = Double.parseDouble(operands[i]);
+            } else {
+                //if a cell reference
+                if (!isNumber(sheet.getCellValue(operands[i]))) {
+                    return sheet.getCellValue(operands[i]);
+                }
+                opints[i] = Double.parseDouble(sheet.getCellValue(operands[i]));
+            }
         }
-        return Double.parseDouble(sheet.getCellValue(input));
+        return trimEnd(String.valueOf(opints[0] - opints[1]));
     }
 
-    private String getTextOperands(String input) {
-        if (isTextForm(input)) {
-            return input.substring(1, input.length() - 1);
+    private String calcMultiply() {
+        for (int i = 0; i < operands.length; i++) {
+            if (isNumber(operands[i])) {
+                opints[i] = Double.parseDouble(operands[i]);
+            } else {
+                //if a cell reference
+                if (!isNumber(sheet.getCellValue(operands[i]))) {
+                    return sheet.getCellValue(operands[i]);
+                }
+                opints[i] = Double.parseDouble(sheet.getCellValue(operands[i]));
+            }
         }
-        return sheet.getCellValue(input);
+        return trimEnd(String.valueOf(opints[0] * opints[1]));
     }
 
-    private static boolean isCellForm(String input) {
-        return input.length() >= 2
-                && Character.isLetter(input.charAt(0))
-                && isNumber(input.substring(1));
-    }
-
-    private static boolean isTextForm(String input) {
-        return input.length() > 1
-                && input.charAt(0) == '"'
-                && input.charAt(input.length() - 1) == '"';
-    }
-
-    private static boolean isNumber(String input) {
-        Scanner read = new Scanner(input);
-        return read.hasNextDouble();
-    }
-
-    private static String trimEnd(String input) {
-        if (input.substring(input.length() - 2).equals(".0")) {
-            input = input.substring(0, input.length() - 2);
+    private String calcDivide() {
+        for (int i = 0; i < operands.length; i++) {
+            if (isNumber(operands[i])) {
+                opints[i] = Double.parseDouble(operands[i]);
+            } else {
+                //if a cell reference
+                if (!isNumber(sheet.getCellValue(operands[i]))) {
+                    return sheet.getCellValue(operands[i]);
+                }
+                opints[i] = Double.parseDouble(sheet.getCellValue(operands[i]));
+            }
         }
-        return input;
+        if (trimEnd(String.valueOf(opints[1])).equals("0")) {
+            return "#DIV/0!";
+        }
+        return trimEnd(String.valueOf(opints[0] / opints[1]));
     }
+
 }

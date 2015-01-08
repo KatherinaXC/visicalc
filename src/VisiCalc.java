@@ -3,165 +3,186 @@ import java.util.Scanner;
 
 public class VisiCalc {
 
-    private Cell[][] spreadsheet;
+    private Cell[][] sheet;
     private int height;
     private int width;
+    private Cell emptycell = new Cell();
 
+    //constructors
     public VisiCalc(int cols, int rows) {
-        //Initializes the visicalc
-        spreadsheet = new Cell[rows][cols];
+        //limitations on #cols and #rows
         if (rows > 99) {
             rows = 99;
         }
         if (cols > 26) {
             cols = 26;
         }
+        if (rows < 0) {
+            rows = 0;
+        }
+        if (cols < 0) {
+            cols = 0;
+        }
+        //initializes spreadsheet + variables
+        this.sheet = new Cell[rows][cols];
         this.height = rows;
         this.width = cols;
-        //All cells are null initially, assignment all points to same cell object
-        Cell cell = new Cell();
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                spreadsheet[i][j] = cell;
+        //adds basic empty cells to sheet, all link to same single cell
+        for (int temprow = 0; temprow < this.height; temprow++) {
+            for (int tempcol = 0; tempcol < this.width; tempcol++) {
+                this.sheet[temprow][tempcol] = this.emptycell;
             }
         }
     }
 
     public VisiCalc() {
-        //calls other constructor with default values 7 and 20
+        //calls other constructor with 7 rows and 20 columns
         this(7, 20);
     }
 
+    //main body method
     public String calc(String input) {
+        //tests commands first
         if (input.toLowerCase().equals("quit")) {
-            //self explanatory... quits program
+            //quit command
+            //format: "quit"
             return "Goodbye.";
         } else if (input.toLowerCase().equals("help")) {
+            //help command
+            //format: "help"
             return getHelp();
         } else if (input.toLowerCase().indexOf("clear") == 0) {
-            return commandClear(input);
+            //clear command (resets given cells to the empty cell)
+            //format: "clear", "clear <cell>", "clear <range>"
+            return commandClear(input.substring("clear ".length() - 1).trim());
         } else if (input.toLowerCase().indexOf("dump") == 0) {
-            return commandDump(input);
+            //dump command
+            //format: "dump", "dump <cell>", "dump <range>"
+            return commandDump(input.substring("dump ".length() - 1).trim());
         } else if (input.toLowerCase().indexOf("align") == 0) {
-            return commandAlign(input);
+            //align command
+            //format: "align <cell> <alignment>", "align <range> <alignment>"
+            return commandAlign(input.substring("align ".length() - 1).trim());
         } else if (input.toLowerCase().indexOf("width") == 0) {
-            return commandWidth(input);
+            //setwidth command
+            //format: "width <column> <value>"
+            return commandWidth(input.substring("width ".length() - 1).trim());
         }
-        //Assumed enter-assignment mode
-        String cell = input.substring(0, input.indexOf("=")).trim();
-        String formula = input.substring(input.indexOf("=") + 1).trim();
-        if (!isACell(cell)) {
-            //Valid-cell error checking for LEFT SIDE ERRORS ONLY
-            return "Cell reference, " + cell.trim() + ", is invalid";
+        //everything that's not commands would be assignments
+        String celladdress = input.substring(0, input.indexOf("=")).trim();
+        String cellformula = input.substring(input.indexOf("=") + 1).trim();
+        if (!isACell(celladdress)) {
+            //Valid-cell error checking for left side errors
+            return "Cell reference, " + celladdress + ", is invalid";
         }
-        //assign and create cells
-        if (formula.charAt(0) == '"' && formula.charAt(formula.length() - 1) == '"') {
+        //init new cells in specific forms
+        if (cellformula.charAt(0) == '"' && cellformula.charAt(cellformula.length() - 1) == '"') {
             //literal text
-            spreadsheet[rownum(cell)][colnum(cell)] = new CellText(formula.substring(1, formula.length() - 1), this);
-        } else if (Character.isLetter(formula.charAt(0)) || isExpr(formula)) {
-            //expression or reference
-            if (isCellForm(formula)) {
+            //TODO
+        } else if (Character.isLetter(cellformula.charAt(0))) {
+            //function or reference
+            if (isCellForm(cellformula)) {
                 //single reference
-                spreadsheet[rownum(cell)][colnum(cell)] = new CellRef(formula, this);
+                //TODO
             } else {
-                //command op or binary op
-                spreadsheet[rownum(cell)][colnum(cell)] = new CellBin(formula, this);
+                //command op
+                //TODO
             }
+        } else if (isABinExpr(cellformula)) {
+            //binary expression
+            sheet[rownum(celladdress)][colnum(celladdress)] = new CellBin(cellformula, this);
         } else {
-            //number, it's the only option left. Syntax is "guaranteed" for double input
-            spreadsheet[rownum(cell)][colnum(cell)] = new CellNum(formula, this);
+            //number
+            sheet[rownum(celladdress)][colnum(celladdress)] = new CellNum(cellformula, this);
         }
         return null;
     }
 
-    private String commandClear(String input) {
-        //reads params and clears them
-        input = input.substring(5);
+    //command methods
+    public static String getHelp() {
+        //TODO
+        return "Help function.";
+    }
+
+    public String commandClear(String input) {
+        //if input is "", then clear all the cells
         if (input.equals("")) {
-            //clear ALL the cells - set input to full table
             input = fullTable();
         }
-        //test if input is valid
+        //test for input validity
         if (!isAParameter(input)) {
-            return "Cell reference, " + input.trim() + ", is invalid";
+            return "Cell reference, " + input + ", is invalid";
         }
         String[] cellarray = getIndividualCells(input);
-        Cell blankcell = new Cell();
         for (int i = 0; i < cellarray.length; i++) {
-            spreadsheet[rownum(cellarray[i])][colnum(cellarray[i])] = blankcell;
+            sheet[rownum(cellarray[i])][colnum(cellarray[i])] = emptycell;
         }
         return null;
     }
 
-    private String commandDump(String input) {
-        //dumps cells, their formulas, values, alignments, widths
-        input = input.substring(4).trim();
+    public String commandDump(String input) {
+        //if input is "", then dump all the cells
         if (input.equals("")) {
-            //dump ALL the cells - set input to full table
             input = fullTable();
         }
-        //test if input is valid
+        //test for input validity
         if (!isAParameter(input)) {
-            return "Cell reference, " + input.trim() + ", is invalid";
+            return "Cell reference, " + input + ", is invalid";
         }
         String[] cellarray = getIndividualCells(input);
-        String output = cellarray[0].toUpperCase()
-                + " = {"
-                + spreadsheet[rownum(cellarray[0])][colnum(cellarray[0])].dump()
-                + "}";
+        String output = getDump(cellarray[0]);
         for (int i = 1; i < cellarray.length; i++) {
-            output += "\n";
-            output += cellarray[i].toUpperCase()
-                    + " = {"
-                    + spreadsheet[rownum(cellarray[i])][colnum(cellarray[i])].dump()
-                    + "}";
-
+            output += "\n" + getDump(cellarray[i]);
         }
         return output;
     }
 
-    private String commandAlign(String input) {
-        //because only a cell or a range of cells can be input
+    public String commandAlign(String input) {
+        //array containing [<colmark>, <width>]
         String[] inputarray = input.split(" ");
-        String alignment = inputarray[inputarray.length - 1];
-        String params = input.substring(5, input.length() - alignment.length());
         //test if input is valid
-        if (!isAParameter(params)) {
-            return "Cell reference, " + params.trim() + ", is invalid";
+        if (!isAParameter(inputarray[0])) {
+            return "Cell reference, " + inputarray[0] + ", is invalid";
         }
-        String[] cellarray = getIndividualCells(params);
+        String[] cellarray = getIndividualCells(inputarray[0]);
         for (int i = 0; i < cellarray.length; i++) {
-            spreadsheet[rownum(cellarray[i])][colnum(cellarray[i])].align(alignment);
+            sheet[rownum(cellarray[i])][colnum(cellarray[i])].setAlign(inputarray[1]);
         }
         return null;
     }
 
-    private String commandWidth(String input) {
-        //width command
+    public String commandWidth(String input) {
+        //array containing [<column>, <value>]
         String[] inputarray = input.split(" ");
         //test if input column is valid
-        if (inputarray[1].length() != 1
-                || !Character.isLetter(inputarray[1].charAt(0))
-                || Character.toUpperCase(inputarray[1].charAt(0)) - 'A' + 1 > width) {
-            return "Column reference, " + inputarray[1] + " is invalid";
+        if (inputarray[0].length() != 1
+                || !Character.isLetter(inputarray[0].charAt(0))
+                || Character.toUpperCase(inputarray[0].charAt(0)) - 'A' + 1 > width) {
+            return "Column reference, " + inputarray[0] + " is invalid";
         }
-        //max possible width is 20
-        int newwidth = Integer.parseInt(inputarray[2]);
-        //set the width (value validity testing is IN method)
+        //max possible width is 20, although this will be enforced in the cell-method
+        int newwidth = Integer.parseInt(inputarray[1]);
         for (int i = 0; i < this.height - 1; i++) {
-            spreadsheet[i][Character.toUpperCase(inputarray[1].charAt(0)) - 'A'].setWidth(newwidth);
+            sheet[i][Character.toUpperCase(inputarray[1].charAt(0)) - 'A'].setWidth(newwidth);
         }
         return null;
     }
 
-    public boolean isACell(String input) {
-        //does the cell exist?
+    //util methods
+    public boolean isCellForm(String input) {
+        //returns if the input is in the shape of a cell address
+        //DOES NOT TEST FOR OUT OF BOUNDS
         return input.indexOf(':') == -1
                 && input.indexOf(',') == -1
                 && input.length() > 1
-                && Character.isLetter(input.charAt(0))
-                && colnum(input) + 1 <= this.width
-                && rownum(input) + 1 <= this.height;
+                && Character.isLetter(input.charAt(0));
+    }
+
+    public boolean isACell(String celladdress) {
+        //this method tests if the cell format is correct, and if so, if it is within the range of the spreadsheet
+        return isCellForm(celladdress)
+                && colnum(celladdress) < width
+                && rownum(celladdress) < height;
     }
 
     public boolean isARange(String input) {
@@ -185,29 +206,39 @@ public class VisiCalc {
         return true;
     }
 
-    private boolean isExpr(String input) {
-        //tests if a cell is an expression (add, subtract, mult, div)
-        return !(input.charAt(0) == '"' && input.charAt(input.length() - 1) == '"')
-                && ((input.indexOf('+') != -1 && input.indexOf('+') != 0 && input.indexOf('+') != input.length() - 1)
-                || (input.indexOf('-') != -1 && input.indexOf('-') != 0 && input.indexOf('-') != input.length() - 1)
-                || (input.indexOf('*') != -1 && input.indexOf('*') != 0 && input.indexOf('*') != input.length() - 1)
-                || (input.indexOf('/') != -1 && input.indexOf('/') != 0 && input.indexOf('/') != input.length() - 1));
+    public static boolean isABinExpr(String input) {
+        //tests if a cell is a binary expression (add, subtract, mult, div)
+        return (input.indexOf(" + ") != -1 && input.indexOf(" + ") != 0 && input.indexOf(" + ") != input.length() - 3)
+                || (input.indexOf(" - ") != -1 && input.indexOf(" - ") != 0 && input.indexOf(" - ") != input.length() - 3)
+                || (input.indexOf(" * ") != -1 && input.indexOf(" * ") != 0 && input.indexOf(" * ") != input.length() - 3)
+                || (input.indexOf(" / ") != -1 && input.indexOf(" / ") != 0 && input.indexOf(" / ") != input.length() - 3);
     }
 
-    public boolean isFilled(String input) {
-        return isACell(input)
-                && spreadsheet[rownum(input)][colnum(input)].getValue() != null;
-    }
-
-    private static boolean isNumber(String input) {
+    public static boolean isNumber(String input) {
         Scanner read = new Scanner(input);
         return read.hasNextDouble();
     }
 
-    private static boolean isCellForm(String input) {
-        return input.length() >= 2
-                && Character.isLetter(input.charAt(0))
-                && isNumber(input.substring(1));
+    public boolean isFilled(String location) {
+        //tests if a cell contains any information
+        return sheet[rownum(location)][colnum(location)].getValue() != null;
+    }
+
+    public static int colnum(String cell) {
+        //translate a cell coord to 0-based Cell[][x] number
+        //all input is assumed to be in cell form
+        return cell.toUpperCase().charAt(0) - 'A';
+    }
+
+    public static int rownum(String cell) {
+        //translate a cell coord to 0-based Cell[x][] number
+        //all input is assumed to be in cell form
+        return Integer.parseInt(cell.substring(1)) - 1;
+    }
+
+    public String fullTable() {
+        //returns a range representing the entire spreadsheet
+        return "A1:" + (char) ('A' + width - 1) + (height);
     }
 
     public String[] getIndividualCells(String input) {
@@ -226,31 +257,8 @@ public class VisiCalc {
         return output;
     }
 
-    public String getValue(String location) {
-        //gets the printed value of a certain cell
-        if (!isACell(location)) {
-            return "Cell reference, " + location.trim() + ", is invalid";
-        }
-        return spreadsheet[rownum(location)][colnum(location)].toString();
-    }
-
-    public String getDump(String location) {
-        return location.toUpperCase()
-                + " = {"
-                + spreadsheet[rownum(location)][colnum(location)].dump()
-                + "}";
-    }
-
-    public String getCellValue(String location) {
-        //gets the value of a certain cell
-        if (!isACell(location)) {
-            return "Cell reference, " + location.trim() + ", is invalid";
-        }
-        return spreadsheet[rownum(location)][colnum(location)].getValue();
-    }
-
     private void cellArray(String param, String[] input, int startslot) {
-        //this is a separate component of another method
+        //this is a separate component of getIndividualCells() method
         param = param.trim();
         if (isACell(param)) {
             //put the cell in the array
@@ -284,34 +292,50 @@ public class VisiCalc {
         }
     }
 
-    private int colnum(String cell) {
-        //returns the column number of the given cell
-        return cell.toUpperCase().charAt(0) - 'A';
+    //obtaining properties/info about a cell, ALL PUBLIC (or should be haha)
+    public String getDump(String location) {
+        location = location.trim();
+        //returns one line (no linebreak) of dumptext for a single cell
+        return location.toUpperCase()
+                + " = {"
+                + sheet[rownum(location)][colnum(location)].getDump()
+                + "}";
     }
 
-    private int rownum(String cell) {
-        //returns the row number of the given cell
-        return Integer.parseInt(cell.substring(1)) - 1;
+    public String getValue(String location) {
+        location = location.trim();
+        //gets the printed value of a certain cell, WITH SPACING. (This includes #####)
+        //if the cell is invalid it returns null
+        if (!isACell(location)) {
+            return null;
+        }
+        return sheet[rownum(location)][colnum(location)].toString();
     }
 
-    private String fullTable() {
-        //returns dimensions of the whole spreadsheet
-        return "A1:" + (char) ('A' + width - 1) + (height);
+    public String getCellValue(String location) {
+        //returns the value of a certain cell, WITH NO PADDING.
+        //if the cell is invalid it returns null
+        location = location.trim();
+        if (!isACell(location)) {
+            return null;
+        }
+        return sheet[rownum(location)][colnum(location)].getValue();
     }
 
+    //print (toString) method
     public String toString() {
         //prints spreadsheet
         String output = "";
         //top row (just the column headers)
         String row = "   ";
         for (int cols = 0; cols < width; cols++) {
-            for (int spaces = 0; spaces < spreadsheet[0][cols].getWidth() / 2; spaces++) {
+            for (int spaces = 0; spaces < sheet[0][cols].getWidth() / 2; spaces++) {
                 row += " ";
             }
-            if (spreadsheet[0][cols].getWidth() != 0) {
+            if (sheet[0][cols].getWidth() != 0) {
                 row += (char) ('A' + cols);
             }
-            for (int spaces = 0; spaces < (spreadsheet[0][cols].getWidth() - 1) / 2; spaces++) {
+            for (int spaces = 0; spaces < (sheet[0][cols].getWidth() - 1) / 2; spaces++) {
                 row += " ";
             }
         }
@@ -333,7 +357,7 @@ public class VisiCalc {
             //actual data:                
             for (int cols = 0; cols < width; cols++) {
                 //all cells have content, but "null" cells should return just blanks
-                row += spreadsheet[rows][cols].toString() + " ";
+                row += sheet[rows][cols].toString() + " ";
             }
             if (row.length() < 80) {
                 output += row + "\n";
@@ -342,10 +366,5 @@ public class VisiCalc {
             }
         }
         return output;
-    }
-
-    public static String getHelp() {
-        //TODO update as necessary
-        return "Help text here.";
     }
 }

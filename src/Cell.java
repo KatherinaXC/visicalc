@@ -1,4 +1,8 @@
-public class Cell {
+
+import java.util.Scanner;
+
+
+class Cell {
 
     private String formula;
     private String alignment = "auto";
@@ -6,22 +10,23 @@ public class Cell {
     VisiCalc sheet;
 
     public Cell(String input, VisiCalc sheet) {
-        setFormula(input);
+        this.formula = input;
         this.sheet = sheet;
     }
 
     public Cell() {
-        this.formula = null;
+        this.formula = "";
+        this.sheet = null;
     }
 
-    public String dump() {
+    public String getDump() {
         return " \"Input\" = \"" + getFormula()
                 + "\", \"Value\" = \"" + getFormula()
                 + "\", \"Alignment\" = \"" + getAlignment()
                 + "\", \"Width\" = \"" + getWidth() + "\" ";
     }
 
-    public void align(String input) {
+    public void setAlign(String input) {
         input = input.toLowerCase();
         if (input.equals("left")) {
             this.alignment = "left";
@@ -32,10 +37,6 @@ public class Cell {
         }
     }
 
-    public void setFormula(String input) {
-        this.formula = input;
-    }
-    
     public void setWidth(int width) {
         if (width < 0) {
             width = 0;
@@ -52,11 +53,11 @@ public class Cell {
     public String getAlignment() {
         return this.alignment;
     }
-    
+
     public int getWidth() {
         return this.width;
     }
-    
+
     public String getValue() {
         return null;
     }
@@ -65,12 +66,45 @@ public class Cell {
         //This class is only going to be used for blank cells anyway, so that VisiCalc doesn't crash on "dump"
         return blankReturn(getWidth());
     }
-    
+
     public static String blankReturn(int length) {
         String out = "";
         for (int i = 0; i < length; i++) {
             out += " ";
         }
         return out;
+    }
+
+    public String testOperands(String[] input) {
+        //returns null if the string is a valid operand
+        for (String val : input) {
+            if (!Character.isLetter(val.charAt(0))) {
+                return null;
+            } else if (sheet.isCellForm(val)) {
+                if (!sheet.isACell(val)) {
+                    return "#REF!";
+                } else if (!sheet.isFilled(val)) {
+                    return "#VALUE!";
+                } else if (sheet.getCellValue(val).equals("#DIV/0!")) {
+                    return "#DIV/0!";
+                } else if (sheet.getCellValue(val).equals("#REF!")) {
+                    return "#REF!";
+                } else if (sheet.getCellValue(val).equals("#VALUE!")) {
+                    return "#VALUE!";
+                } else if (!isNumber(sheet.getCellValue(val))) {
+                    return "#VALUE!";
+                } else {
+                    return null;
+                }
+            } else {
+                return "#VALUE!";
+            }
+        }
+        return null;
+    }
+    
+    public static boolean isNumber(String input) {
+        Scanner read = new Scanner(input);
+        return read.hasNextDouble();
     }
 }
