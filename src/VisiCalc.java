@@ -6,7 +6,6 @@ public class VisiCalc {
     private Cell[][] sheet;
     private int height;
     private int width;
-    private Cell emptycell = new Cell();
 
     //constructors
     public VisiCalc(int cols, int rows) {
@@ -30,7 +29,7 @@ public class VisiCalc {
         //adds basic empty cells to sheet, all link to same single cell
         for (int temprow = 0; temprow < this.height; temprow++) {
             for (int tempcol = 0; tempcol < this.width; tempcol++) {
-                this.sheet[temprow][tempcol] = this.emptycell;
+                this.sheet[temprow][tempcol] = new Cell();
             }
         }
     }
@@ -75,10 +74,15 @@ public class VisiCalc {
             //Valid-cell error checking for left side errors
             return "Cell reference, " + celladdress + ", is invalid";
         }
+        //to preserve width across overwrite...
+        int oldwidth = sheet[rownum(celladdress)][colnum(celladdress)].getWidth();
         //init new cells in specific forms
         if (cellformula.charAt(0) == '"' && cellformula.charAt(cellformula.length() - 1) == '"') {
             //literal text
-            //TODO
+            sheet[rownum(celladdress)][colnum(celladdress)] = new CellText(cellformula, this, oldwidth);
+        } else if (isABinExpr(cellformula)) {
+            //binary expression
+            sheet[rownum(celladdress)][colnum(celladdress)] = new CellBin(cellformula, this, oldwidth);
         } else if (Character.isLetter(cellformula.charAt(0))) {
             //function or reference
             if (isCellForm(cellformula)) {
@@ -88,12 +92,9 @@ public class VisiCalc {
                 //command op
                 //TODO
             }
-        } else if (isABinExpr(cellformula)) {
-            //binary expression
-            sheet[rownum(celladdress)][colnum(celladdress)] = new CellBin(cellformula, this);
         } else {
             //number
-            sheet[rownum(celladdress)][colnum(celladdress)] = new CellNum(cellformula, this);
+            sheet[rownum(celladdress)][colnum(celladdress)] = new CellNum(cellformula, this, oldwidth);
         }
         return null;
     }
@@ -115,7 +116,7 @@ public class VisiCalc {
         }
         String[] cellarray = getIndividualCells(input);
         for (int i = 0; i < cellarray.length; i++) {
-            sheet[rownum(cellarray[i])][colnum(cellarray[i])] = emptycell;
+            sheet[rownum(cellarray[i])][colnum(cellarray[i])] = new Cell();
         }
         return null;
     }
@@ -162,8 +163,8 @@ public class VisiCalc {
         }
         //max possible width is 20, although this will be enforced in the cell-method
         int newwidth = Integer.parseInt(inputarray[1]);
-        for (int i = 0; i < this.height - 1; i++) {
-            sheet[i][Character.toUpperCase(inputarray[1].charAt(0)) - 'A'].setWidth(newwidth);
+        for (int i = 0; i < this.height; i++) {
+            sheet[i][Character.toUpperCase(inputarray[0].charAt(0)) - 'A'].setWidth(newwidth);
         }
         return null;
     }

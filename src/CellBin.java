@@ -5,8 +5,8 @@ public class CellBin extends CellNum {
     private double[] opints = new double[2];
     private char operator;
 
-    public CellBin(String input, VisiCalc sheet) {
-        super(input, sheet);
+    public CellBin(String input, VisiCalc sheet, int width) {
+        super(input, sheet, width);
         String[] ops = input.split(" ");
         this.operands = new String[]{ops[0], ops[2]};
         this.operator = ops[1].charAt(0);

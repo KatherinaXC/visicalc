@@ -1,9 +1,9 @@
 
 public class CellNum extends Cell {
 
-    public CellNum(String input, VisiCalc sheet) {
+    public CellNum(String input, VisiCalc sheet, int width) {
         //the sheet isn't actually used in this class, as this is a static cell
-        super(input, sheet);
+        super(input, sheet, width);
     }
 
     public String getDump() {

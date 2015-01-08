@@ -6,17 +6,17 @@ class Cell {
 
     private String formula;
     private String alignment = "auto";
-    private int width = 10;
+    private int width;
     VisiCalc sheet;
 
-    public Cell(String input, VisiCalc sheet) {
+    public Cell(String input, VisiCalc sheet, int width) {
         this.formula = input;
         this.sheet = sheet;
+        this.width = width;
     }
 
     public Cell() {
-        this.formula = "";
-        this.sheet = null;
+        this("", null, 10);
     }
 
     public String getDump() {
