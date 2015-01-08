@@ -15,8 +15,10 @@ public class CellBin extends CellNum {
     public String getValue() {
         String error = testOperands(operands);
         if (error != null) {
+            setAutoLeft(true);
             return error;
         }
+        setAutoLeft(false);
         if (operator == '+') {
             return calcAdd();
         } else if (operator == '-') {

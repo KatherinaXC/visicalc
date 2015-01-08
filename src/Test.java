@@ -6,7 +6,6 @@ public class Test {
     public static Test[] tests = {
     	
     	// CHECKPOINT 1
-    	
         new Test("Quit", new Step[] {
             new Step("quit", "Goodbye." ),
         }),
@@ -231,19 +230,19 @@ public class Test {
         	new Step("clear A1:A1")
         }),
         new Test("Clear range invalid UL row", 1, 1, new Step[] {
-        	new Step("clear A2:A2", "Cell reference, A2:A2, is invalid")
+        	new Step("clear A2:A2", "Cell reference, A2, is invalid")
         }),
         new Test("Clear range invalid UL col", 1, 1, new Step[] {
-        	new Step("clear B1:B1", "Cell reference, B1:B1, is invalid")
+        	new Step("clear B1:B1", "Cell reference, B1, is invalid")
         }),
         new Test("Clear range invalid LR row", 1, 1, new Step[] {
-        	new Step("clear A1:A2", "Cell reference, A1:A2, is invalid")
+        	new Step("clear A1:A2", "Cell reference, A2, is invalid")
         }),
         new Test("Clear range invalid LR col", 1, 1, new Step[] {
-        	new Step("clear A1:B1", "Cell reference, A1:B1, is invalid")
+        	new Step("clear A1:B1", "Cell reference, B1, is invalid")
         }),
         new Test("Clear range inversion", 2, 2, new Step[] {
-        	new Step("clear B2:A1", "Cell reference, B2:A1, is invalid")
+        	new Step("clear B2:A1", "Cell reference, A1, is invalid")
         }),
         new Test("Clear row and column out of range", 1, 1, new Step[] {
         	new Step("clear B2", "Cell reference, B2, is invalid")
@@ -331,6 +330,24 @@ public class Test {
                 new Result("A3", "         2"),
             }),
         }),
+/*
+        new Test("two way chain", new Step[] {
+            new Step("A5 = 1"),
+            new Step("A4 = A5"),
+            new Step("A6 = A4"),
+            new Step("A3 = A6"),
+            new Step("A7 = A3"),
+            new Step("A2 = A7"),
+            new Step("A8 = A2"),
+            new Step("A1 = A8"),
+        	new Step("A9 = A1", new Result[] {
+                new Result("A9", "         1"),
+            }),
+        	new Step("A5 = 2", new Result[] {
+                    new Result("A9", "         2"),
+                }),
+        }),
+*/
         new Test("ref + int", new Step[] {
             new Step("A1 = 1"),
         	new Step("A2 = A1 + 1", new Result[] {
@@ -350,7 +367,7 @@ public class Test {
             new Step("A3 = A2"),
             new Step("B1 = 1"),
             new Step("B2 = B1"),
-            new Step("B3 = B3"),
+            new Step("B3 = B2"),
         	new Step("A5 = A3 + B3", new Result[] {
                 new Result("A5", "         2"),
             }),
@@ -361,7 +378,64 @@ public class Test {
                 new Result("A5", "         4"),
             }),
         }),
-        
+        new Test("ref(string) + ref(int)", new Step[] {
+           	new Step("A1 = \"Hello\""),
+            new Step("A2 = 1"),
+        	new Step("A3 = A1 + A2", new Result[] {
+                new Result("A3", "#VALUE!   "),
+            }),
+        }),
+        new Test("ref(string) + int", new Step[] {
+        	new Step("A1 = \"Hello\""),
+        	new Step("A2 = A1 + 1", new Result[] {
+                new Result("A2", "#VALUE!   "),
+            }),
+        }),
+        new Test("#VALUE! + int", new Step[] {
+            new Step("A1 = \"Hello\""),
+        	new Step("A2 = A1 + 1"),
+        	new Step("A3 = A2 + 1", new Result[] {
+                new Result("A3", "#VALUE!   "),
+            }),
+        }),
+        new Test("#VALUE! + ref(int)", new Step[] {
+            new Step("A1 = \"Hello\""),
+        	new Step("A2 = A1 + 1"),
+        	new Step("A3 = 1"),
+        	new Step("A4 = A2 + A3", new Result[] {
+                new Result("A4", "#VALUE!   "),
+            }),
+        }),
+        new Test("ref = invalidref", new Step[] {
+        	new Step("A1 = H21", new Result[] {
+                new Result("A1", "#REF!     "),
+            }),
+        }),
+        new Test("invalidref + int", new Step[] {
+            new Step("A1 = H21 + 1", new Result[] {
+                new Result("A1", "#REF!     "),
+            }),
+        }),
+        new Test("invalidref + ref(int)", new Step[] {
+            new Step("A1 = 1"),
+            new Step("A2 = H21 + A1", new Result[] {
+                new Result("A2", "#REF!     "),
+            }),
+        }),
+        new Test("#REF! + int", new Step[] {
+            new Step("A1 = H21"),
+        	new Step("A2 = A1 + 1", new Result[] {
+                new Result("A2", "#REF!     "),
+            }),
+        }),
+        new Test("#REF! + ref(int)", new Step[] {
+            new Step("A1 = H21"),
+            new Step("A2 = 1"),
+        	new Step("A3 = H21 + A1", new Result[] {
+                new Result("A3", "#REF!     "),
+            }),
+        }),
+
         // CHECKPOINT 3
         new Test("SUM(ref)", new Step[] {
             new Step("A1 = 1"),
@@ -422,7 +496,100 @@ public class Test {
             new Step("A2 = CONCAT(A1, \" World!\")", new Result[] {
                 new Result("A2", "Hello Worl"),
             }),
-            new Step("dump A2", "A2 = { \"Input\" = \"CONCAT(A1, \"World!\")\", \"Value\" = \"Hello World!\" }")
+            new Step("dump A2", "A2 = { \"Input\" = \"CONCAT(A1, \" World!\")\", \"Value\" = \"Hello World!\" }")
+        }),
+        new Test("CONCAT(ref, ref)", new Step[] {
+            new Step("A1 = \"Hello\""),
+            new Step("A2 = \" World!\""),
+            new Step("A3 = CONCAT(A1, A2)", new Result[] {
+                new Result("A3", "Hello Worl"),
+            }),
+            new Step("dump A3", "A3 = { \"Input\" = \"CONCAT(A1, A2)\", \"Value\" = \"Hello World!\" }")
+        }),
+        new Test("CONCAT(range)", new Step[] {
+            new Step("A1 = \"Hello\""),
+            new Step("A2 = \" World!\""),
+            new Step("A3 = CONCAT(A1:A2)", new Result[] {
+                new Result("A3", "Hello Worl"),
+            }),
+            new Step("dump A3", "A3 = { \"Input\" = \"CONCAT(A1:A2)\", \"Value\" = \"Hello World!\" }")
+        }),
+        new Test("CONCAT(ref, range)", new Step[] {
+            new Step("A1 = \"Hello\""),
+            new Step("A2 = \" World!\""),
+            new Step("A3 = CONCAT(A1, A2:A2)", new Result[] {
+                new Result("A3", "Hello Worl"),
+            }),
+            new Step("dump A3", "A3 = { \"Input\" = \"CONCAT(A1, A2:A2)\", \"Value\" = \"Hello World!\" }")
+        }),
+        new Test("CONCAT(range, range)", new Step[] {
+            new Step("A1 = \"Hello\""),
+            new Step("A2 = \" World!\""),
+            new Step("A3 = CONCAT(A1:A1, A2:A2)", new Result[] {
+                new Result("A3", "Hello Worl"),
+            }),
+            new Step("dump A3", "A3 = { \"Input\" = \"CONCAT(A1:A1, A2:A2)\", \"Value\" = \"Hello World!\" }")
+        }),
+        new Test("CONCAT(range, string)", new Step[] {
+            new Step("A1 = \"Hello\""),
+            new Step("A2 = CONCAT(A1:A1, \" World!\")", new Result[] {
+                new Result("A2", "Hello Worl"),
+            }),
+            new Step("dump A2", "A2 = { \"Input\" = \"CONCAT(A1:A1, \" World!\")\", \"Value\" = \"Hello World!\" }")
+        }),
+        new Test("CONCAT(number, string)", new Step[] {
+            new Step("A1 = CONCAT(1, \" World!\")", new Result[] {
+                new Result("A1", "1 World!  "),
+            }),
+            new Step("dump A1", "A1 = { \"Input\" = \"CONCAT(1, \" World!\")\", \"Value\" = \"1 World!\" }")
+        }),
+        new Test("CONCAT(number, ref)", new Step[] {
+            new Step("A1 = \" World!\""),
+            new Step("A2 = CONCAT(1, A1)", new Result[] {
+                new Result("A2", "1 World!  "),
+            }),
+            new Step("dump A2", "A2 = { \"Input\" = \"CONCAT(1, A1)\", \"Value\" = \"1 World!\" }")
+        }),
+        new Test("CONCAT(number, range)", new Step[] {
+            new Step("A1 = \" World!\""),
+            new Step("A2 = CONCAT(1, A1:A1)", new Result[] {
+                new Result("A2", "1 World!  "),
+            }),
+            new Step("dump A2", "A2 = { \"Input\" = \"CONCAT(1, A1:A1)\", \"Value\" = \"1 World!\" }")
+        }),
+        new Test("CONCAT(number, ref, range, string)", new Step[] {
+            new Step("A1 = \" Hello\""),
+            new Step("A2 = \" World\""),
+            new Step("A3 = CONCAT(1, A1, A2:A2, \" is enough\")", new Result[] {
+                new Result("A3", "1 Hello Wo"),
+            }),
+            new Step("dump A3", "A3 = { \"Input\" = \"CONCAT(1, A1, A2:A2, \" is enough\")\", \"Value\" = \"1 Hello World is enough\" }")
+        }),
+        new Test("COUNT(string)", new Step[] {
+            new Step("A1 = COUNT(\"Hello World!\")", new Result[] {
+                new Result("A1", "         0"),
+            }),
+            new Step("dump A1", "A1 = { \"Input\" = \"COUNT(\"Hello World!\")\", \"Value\" = \"0\" }")
+        }),
+        new Test("COUNT(number)", new Step[] {
+            new Step("A1 = COUNT(1)", new Result[] {
+                new Result("A1", "         1"),
+            }),
+            new Step("dump A1", "A1 = { \"Input\" = \"COUNT(1)\", \"Value\" = \"1\" }")
+        }),
+        new Test("COUNT(ref(string))", new Step[] {
+            new Step("A1 = \"Hello World!\""),
+           	new Step("A2 = COUNT(A1)", new Result[] {
+        		new Result("A2", "         0"),
+           	}),
+            new Step("dump A2", "A2 = { \"Input\" = \"COUNT(A1)\", \"Value\" = \"0\" }")
+        }),
+        new Test("COUNT(ref(number))", new Step[] {
+            new Step("A1 = 1"),
+           	new Step("A2 = COUNT(A1)", new Result[] {
+        		new Result("A2", "         1"),
+           	}),
+            new Step("dump A2", "A2 = { \"Input\" = \"COUNT(A1)\", \"Value\" = \"1\" }")
         }),
     };
 
@@ -572,7 +739,7 @@ public class Test {
         
         for (int i = 0; i < results.length; i++) {
             try {
-            	CheckValue(spreadsheet.getCellValue(results[i].getCell()), results[i].getValue(), results[i].getCell());
+            	CheckValue(spreadsheet.getValue(results[i].getCell()), results[i].getValue(), results[i].getCell());
             }
             catch (TestWarning tw) {
             	warnings += "\n        result " + i + ", " + tw.getMessage();

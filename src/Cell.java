@@ -20,11 +20,12 @@ class Cell {
     }
 
     public String getDump() {
-        if (getValue() == null) {
-            return " \"Input\" = \"" + getFormula()
-                    + "\", \"Value\" = \"" + getFormula()
-                    + "\", \"Alignment\" = \"" + getAlignment()
-                    + "\", \"Width\" = \"" + getWidth() + "\" ";
+        String value = getValue();
+        if (value == null) {
+            value = "";
+        }
+        if (value.charAt(0) == '"' && value.charAt(value.length() - 1) == '"') {
+            value = value.substring(1, value.length() - 1);
         }
         return " \"Input\" = \"" + getFormula()
                 + "\", \"Value\" = \"" + getValue()
@@ -82,7 +83,7 @@ class Cell {
             return blankReturn(getWidth());
         }
         //the rest of its subclasses
-        String output = getFormula();
+        String output = getValue();
         if (output.charAt(0) == '"' && output.charAt(output.length() - 1) == '"') {
             output = output.substring(1, getFormula().length() - 1);
         }
