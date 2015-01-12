@@ -1,4 +1,5 @@
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class VisiCalc {
@@ -90,7 +91,28 @@ public class VisiCalc {
                 sheet[rownum(celladdress)][colnum(celladdress)] = new CellRef(cellformula, this, oldwidth);
             } else {
                 //command op
-                //TODO
+                if (cellformula.toUpperCase().startsWith("CONCAT")) {
+                    sheet[rownum(celladdress)][colnum(celladdress)]
+                            = new CellFormConcat(cellformula, this, oldwidth);
+                } else if (cellformula.toUpperCase().startsWith("COUNT")) {
+                    sheet[rownum(celladdress)][colnum(celladdress)]
+                            = new CellFormCount(cellformula, this, oldwidth);
+                } else if (cellformula.toUpperCase().startsWith("SUM")) {
+                    sheet[rownum(celladdress)][colnum(celladdress)]
+                            = new CellFormSum(cellformula, this, oldwidth);
+                } else if (cellformula.toUpperCase().startsWith("UPPER")) {
+                    sheet[rownum(celladdress)][colnum(celladdress)]
+                            = new CellFormUpper(cellformula, this, oldwidth);
+                } else if (cellformula.toUpperCase().startsWith("LENGTH")) {
+                    sheet[rownum(celladdress)][colnum(celladdress)]
+                            = new CellFormLength(cellformula, this, oldwidth);
+                } else if (cellformula.toUpperCase().startsWith("POWER")) {
+                    sheet[rownum(celladdress)][colnum(celladdress)]
+                            = new CellFormPower(cellformula, this, oldwidth);
+                } else {//(cellformula.toUpperCase().startsWith("SQRT("))
+                    sheet[rownum(celladdress)][colnum(celladdress)]
+                            = new CellFormSqrt(cellformula, this, oldwidth);
+                }
             }
         } else {
             //number
@@ -176,7 +198,8 @@ public class VisiCalc {
         return input.indexOf(':') == -1
                 && input.indexOf(',') == -1
                 && input.length() > 1
-                && Character.isLetter(input.charAt(0));
+                && Character.isLetter(input.charAt(0))
+                && isNumber(input.substring(1));
     }
 
     public boolean isACell(String celladdress) {
@@ -189,7 +212,8 @@ public class VisiCalc {
     public boolean isARange(String input) {
         //split the colons and test each cell for validity, then make sure the cells are in the right order
         String[] cellrange = input.split(":");
-        return isACell(cellrange[0])
+        return cellrange.length > 1
+                && isACell(cellrange[0])
                 && isACell(cellrange[1])
                 && colnum(cellrange[0]) <= colnum(cellrange[1])
                 && rownum(cellrange[0]) <= rownum(cellrange[1]);

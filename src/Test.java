@@ -9,111 +9,6 @@ public class Test {
         new Test("Quit", new Step[] {
             new Step("quit", "Goodbye." ),
         }),
-        new Test("Clear", 3, 3, new Step[] {
-            new Step("A1 = 1"),
-            new Step("A2 = 2"),
-            new Step("A3 = 3"),
-            new Step("B1 = 4"),
-            new Step("B2 = 5"),
-            new Step("B3 = 6"),
-            new Step("C1 = 7"),
-            new Step("C2 = 8"),
-            new Step("C3 = 9", new Result [] {
-                new Result("A1", "         1"),		
-                new Result("A2", "         2"),		
-                new Result("A3", "         3"),		
-                new Result("B1", "         4"),		
-                new Result("B2", "         5"),		
-                new Result("B3", "         6"),		
-                new Result("C1", "         7"),		
-                new Result("C2", "         8"),		
-                new Result("C3", "         9"),		
-            }),
-            new Step("clear", new Result[] {
-                new Result("A1", "          "),		
-                new Result("A2", "          "),		
-                new Result("A3", "          "),		
-                new Result("B1", "          "),		
-                new Result("B2", "          "),		
-                new Result("B3", "          "),		
-                new Result("C1", "          "),		
-                new Result("C2", "          "),		
-                new Result("C3", "          "),		
-            })
-        }),
-        new Test("Clear cell", 3, 3, new Step[] {
-            new Step("A1 = 1"),
-            new Step("A2 = 2"),
-            new Step("A3 = 3"),
-            new Step("B1 = 4"),
-            new Step("B2 = 5"),
-            new Step("B3 = 6"),
-            new Step("C1 = 7"),
-            new Step("C2 = 8"),
-            
-            new Step("C3 = 9", new Result [] {
-                new Result("A1", "         1"),		
-                new Result("A2", "         2"),		
-                new Result("A3", "         3"),		
-                new Result("B1", "         4"),		
-                new Result("B2", "         5"),		
-                new Result("B3", "         6"),		
-                new Result("C1", "         7"),		
-                new Result("C2", "         8"),		
-                new Result("C3", "         9"),		
-            }),
-            
-            new Step("clear A1"),
-            new Step("clear A3"),
-            new Step("clear C1"),
-            
-            new Step("clear C3", new Result[] {
-                new Result("A1", "          "),		
-                new Result("A2", "         2"),		
-                new Result("A3", "          "),		
-                new Result("B1", "         4"),		
-                new Result("B2", "         5"),		
-                new Result("B3", "         6"),		
-                new Result("C1", "          "),		
-                new Result("C2", "         8"),		
-                new Result("C3", "          "),		
-            })
-        }),
-        new Test("Clear range", 3, 3, new Step[] {
-            new Step("A1 = 1"),
-            new Step("A2 = 2"),
-            new Step("A3 = 3"),
-            new Step("B1 = 4"),
-            new Step("B2 = 5"),
-            new Step("B3 = 6"),
-            new Step("C1 = 7"),
-            new Step("C2 = 8"),
-            
-            new Step("C3 = 9", new Result [] {
-                new Result("A1", "         1"),		
-                new Result("A2", "         2"),		
-                new Result("A3", "         3"),		
-                new Result("B1", "         4"),		
-                new Result("B2", "         5"),		
-                new Result("B3", "         6"),		
-                new Result("C1", "         7"),		
-                new Result("C2", "         8"),		
-                new Result("C3", "         9"),		
-            }),
-            new Step("clear A1:B2"),
-            
-            new Step("clear B2:C3", new Result[] {
-                new Result("A1", "          "),		
-                new Result("A2", "          "),		
-                new Result("A3", "         3"),		
-                new Result("B1", "          "),		
-                new Result("B2", "          "),		
-                new Result("B3", "          "),		
-                new Result("C1", "         7"),		
-                new Result("C2", "          "),		
-                new Result("C3", "          "),		
-            })
-        }),
         new Test("Assign text, clear, assign number", 1, 1, new Step[] {
             new Step("A1 = \"Hello\"", new Result[] {
                 new Result("A1", "Hello     "),
@@ -191,6 +86,126 @@ public class Test {
             new Step("a7 = 1", new Result[] {
                 new Result("a7", "         1"),
             }),
+        }),
+        new Test("Assign Z99", 26, 99, new Step[] {
+            new Step("Z99 = 1",   new Result[] { new Result("Z99", "         1") }),
+        }),
+        new Test("Clear", 3, 3, new Step[] {
+            new Step("A1 = 1"),
+            new Step("A2 = 2"),
+            new Step("A3 = 3"),
+            new Step("B1 = 4"),
+            new Step("B2 = 5"),
+            new Step("B3 = 6"),
+            new Step("C1 = 7"),
+            new Step("C2 = 8"),
+            new Step("C3 = 9", new Result [] {
+                new Result("A1", "         1"),		
+                new Result("A2", "         2"),		
+                new Result("A3", "         3"),		
+                new Result("B1", "         4"),		
+                new Result("B2", "         5"),		
+                new Result("B3", "         6"),		
+                new Result("C1", "         7"),		
+                new Result("C2", "         8"),		
+                new Result("C3", "         9"),		
+            }),
+            new Step("clear", new Result[] {
+                new Result("A1", "          "),		
+                new Result("A2", "          "),		
+                new Result("A3", "          "),		
+                new Result("B1", "          "),		
+                new Result("B2", "          "),		
+                new Result("B3", "          "),		
+                new Result("C1", "          "),		
+                new Result("C2", "          "),		
+                new Result("C3", "          "),		
+            })
+        }),
+        new Test("Clear Z99", 26, 99, new Step[] {
+            new Step("Z99 = 1",      new Result[] { new Result("Z99", "         1") }),
+            new Step("clear Z99",    new Result[] { new Result("Z99", "          ") })
+        }),
+        new Test("Clear Z99 range", 26, 99, new Step[] {
+            new Step("Z99 = 1",      new Result[] { new Result("Z99", "         1") }),
+            new Step("clear A1:Z99", new Result[] { new Result("Z99", "          ") })
+        }),
+        new Test("Clear Z99 spreadsheet", 26, 99, new Step[] {
+            new Step("Z99 = 1",      new Result[] { new Result("Z99", "         1") }),
+            new Step("clear",        new Result[] { new Result("Z99", "          ") })
+        }),
+        new Test("Clear cell", 3, 3, new Step[] {
+            new Step("A1 = 1"),
+            new Step("A2 = 2"),
+            new Step("A3 = 3"),
+            new Step("B1 = 4"),
+            new Step("B2 = 5"),
+            new Step("B3 = 6"),
+            new Step("C1 = 7"),
+            new Step("C2 = 8"),
+            
+            new Step("C3 = 9", new Result [] {
+                new Result("A1", "         1"),		
+                new Result("A2", "         2"),		
+                new Result("A3", "         3"),		
+                new Result("B1", "         4"),		
+                new Result("B2", "         5"),		
+                new Result("B3", "         6"),		
+                new Result("C1", "         7"),		
+                new Result("C2", "         8"),		
+                new Result("C3", "         9"),		
+            }),
+            
+            new Step("clear A1"),
+            new Step("clear A3"),
+            new Step("clear C1"),
+            
+            new Step("clear C3", new Result[] {
+                new Result("A1", "          "),		
+                new Result("A2", "         2"),		
+                new Result("A3", "          "),		
+                new Result("B1", "         4"),		
+                new Result("B2", "         5"),		
+                new Result("B3", "         6"),		
+                new Result("C1", "          "),		
+                new Result("C2", "         8"),		
+                new Result("C3", "          "),		
+            })
+        }),
+        new Test("Clear range", 3, 3, new Step[] {
+            new Step("A1 = 1"),
+            new Step("A2 = 2"),
+            new Step("A3 = 3"),
+            new Step("B1 = 4"),
+            new Step("B2 = 5"),
+            new Step("B3 = 6"),
+            new Step("C1 = 7"),
+            new Step("C2 = 8"),
+            
+            new Step("C3 = 9", new Result [] {
+                new Result("A1", "         1"),		
+                new Result("A2", "         2"),		
+                new Result("A3", "         3"),		
+                new Result("B1", "         4"),		
+                new Result("B2", "         5"),		
+                new Result("B3", "         6"),		
+                new Result("C1", "         7"),		
+                new Result("C2", "         8"),		
+                new Result("C3", "         9"),		
+            }),
+            new Step("clear A1:B2"),
+            
+            new Step("clear B2:C3", new Result[] {
+                new Result("A1", "          "),		
+                new Result("A2", "          "),		
+                new Result("A3", "         3"),		
+                new Result("B1", "          "),		
+                new Result("B2", "          "),		
+                new Result("B3", "          "),		
+                new Result("C1", "         7"),		
+                new Result("C2", "          "),		
+                new Result("C3", "          "),		
+            })
         }),
         new Test("clear lowercase cell name", new Step[] {
             new Step("a8 = 1", new Result[] {
@@ -307,6 +322,10 @@ public class Test {
             	"A2 = { \"Input\" = \"2\", \"Value\" = \"2\" }"
             ),
         }),
+        new Test("Dump Z99", 26, 99, new Step[] {
+            new Step("Z99 = 1",      new Result[] { new Result("Z99", "         1") }),
+            new Step("dump Z99", "Z99 = { \"Input\" = \"1\", \"Value\" = \"1\" }")
+        }),
         
         // CHECKPOINT 2
         new Test("ref = ref", new Step[] {
@@ -330,7 +349,7 @@ public class Test {
                 new Result("A3", "         2"),
             }),
         }),
-/*
+
         new Test("two way chain", new Step[] {
             new Step("A5 = 1"),
             new Step("A4 = A5"),
@@ -347,7 +366,7 @@ public class Test {
                     new Result("A9", "         2"),
                 }),
         }),
-*/
+
         new Test("ref + int", new Step[] {
             new Step("A1 = 1"),
         	new Step("A2 = A1 + 1", new Result[] {
@@ -443,10 +462,24 @@ public class Test {
                 new Result("A2", "         1"),
             }),
         }),
+        new Test("SUM(ref) update", new Step[] {
+            new Step("A1 = 1"),
+            new Step("A2 = SUM(A1)"),
+            new Step("A1 = 2", new Result[] {
+                new Result("A2", "         2"),
+            }),
+        }),
         new Test("SUM(ref, num)", new Step[] {
             new Step("A1 = 1"),
             new Step("A2 = SUM(A1, 1)", new Result[] {
                 new Result("A2", "         2"),
+            }),
+        }),
+        new Test("SUM(ref, num) update", new Step[] {
+            new Step("A1 = 1"),
+            new Step("A2 = SUM(A1, 1)"),
+            new Step("A1 = 2", new Result[] {
+                new Result("A2", "         3"),
             }),
         }),
         new Test("SUM(ref, ref)", new Step[] {
@@ -455,10 +488,41 @@ public class Test {
                 new Result("A2", "         2"),
             }),
         }),
+        new Test("SUM(ref, ref) update", new Step[] {
+            new Step("A1 = 1"),
+            new Step("A2 = SUM(A1, A1)"),
+            new Step("A1 = 2", new Result[] {
+                new Result("A2", "         4"),
+            }),
+        }),
         new Test("SUM(range)", new Step[] {
             new Step("A1 = 1"),
-            new Step("A2 = SUM(A1:A1)", new Result[] {
-                new Result("A2", "         1"),
+            new Step("A2 = 2"),
+            new Step("B1 = 3"),
+            new Step("B2 = 4"),
+            new Step("C3 = SUM(A1:B2)", new Result[] {
+                new Result("C3", "        10"),
+            }),
+        }),
+        new Test("SUM(range) update", new Step[] {
+            new Step("A1 = 1"),
+            new Step("A2 = 2"),
+            new Step("B1 = 3"),
+            new Step("B2 = 4"),
+            new Step("C3 = SUM(A1:B2)", new Result[] {
+                new Result("C3", "        10"),
+            }),
+            new Step("A1 = 11", new Result[] {
+                new Result("C3", "        20"),
+            }),
+            new Step("A2 = 12", new Result[] {
+                new Result("C3", "        30"),
+            }),
+            new Step("B1 = 13", new Result[] {
+                new Result("C3", "        40"),
+            }),
+            new Step("B2 = 14", new Result[] {
+                new Result("C3", "        50"),
             }),
         }),
         new Test("SUM(ref, range)", new Step[] {
@@ -479,6 +543,46 @@ public class Test {
                 new Result("A2", "         3"),
             }),
         }),
+        new Test("SUM(#REF!, 1)", new Step[] {
+            new Step("A1 = SUM(H21, 1)", new Result[] {
+                new Result("A1", "#REF!     "),
+            }),
+        }),
+        new Test("SUM(ref(#REF!), 1)", new Step[] {
+            new Step("A1 = H21"),
+            new Step("A2 = SUM(A1, 1)", new Result[] {
+                new Result("A2", "#REF!     "),
+            }),
+        }),
+        new Test("SUM(range(#DIV/0!))", new Step[] {
+            new Step("A1 = 0"),
+            new Step("A2 = A1 / 0", new Result[] { new Result("A2", "#DIV/0!   ") }),
+           	new Step("A3 = SUM(A1:A2)", new Result[] { new Result("A3", "#DIV/0!   ") }),
+            new Step("dump A3", "A3 = { \"Input\" = \"SUM(A1:A2)\", \"Value\" = \"#DIV/0!\" }")
+        }),
+        new Test("SUM(number, number) truncate", new Step[] {
+            new Step("A1 = 0.1234567"),
+            new Step("A2 = 1234567"),
+            new Step("A3 = SUM(A1:A2)", new Result[] {
+                new Result("A3", "##########"),
+            }),
+        }),
+        new Test("SUM(real, real, real)", new Step[] {
+            new Step("A1 = 1.1"),
+            new Step("A2 = 2.2"),
+            new Step("A3 = 3.3"),
+            new Step("A4 = SUM(A1:A3)", new Result[] {
+                new Result("A4", "       6.6"),
+            }),
+        }),
+        new Test("SUM(range) high", 26, 99, new Step[] {
+            new Step("X97 = 1"),
+            new Step("X98 = 1"),
+            new Step("Y97 = 1"),
+            new Step("Y98 = 1"),
+           	new Step("Z99 = SUM(X97:Y98)", new Result[] { new Result("Z99", "         4") }),
+            new Step("dump Z99", "Z99 = { \"Input\" = \"SUM(X97:Y98)\", \"Value\" = \"4\" }")
+        }),
         new Test("CONCAT(string)", new Step[] {
             new Step("A1 = CONCAT(\"Hello\")", new Result[] {
                 new Result("A1", "Hello     "),
@@ -489,7 +593,10 @@ public class Test {
             new Step("A2 = CONCAT(A1)", new Result[] {
                 new Result("A2", "Hello     "),
             }),
-            new Step("dump A2", "A2 = { \"Input\" = \"CONCAT(A1)\", \"Value\" = \"Hello\" }")
+            new Step("dump A2", "A2 = { \"Input\" = \"CONCAT(A1)\", \"Value\" = \"Hello\" }"),
+            new Step("A1 = \"World\"", new Result[] {
+                new Result("A2", "World     "),
+            }),
         }),
         new Test("CONCAT(ref, string)", new Step[] {
             new Step("A1 = \"Hello\""),
@@ -565,31 +672,142 @@ public class Test {
             }),
             new Step("dump A3", "A3 = { \"Input\" = \"CONCAT(1, A1, A2:A2, \" is enough\")\", \"Value\" = \"1 Hello World is enough\" }")
         }),
-        new Test("COUNT(string)", new Step[] {
-            new Step("A1 = COUNT(\"Hello World!\")", new Result[] {
-                new Result("A1", "         0"),
+        new Test("CONCAT(string) with colon in strings", new Step[] {
+            new Step("A1 = CONCAT(\"A1:A2\", \"B1:B2\")", new Result[] {
+                new Result("A1", "A1:A2B1:B2"),
             }),
+            new Step("dump A1", "A1 = { \"Input\" = \"CONCAT(\"A1:A2\", \"B1:B2\")\", \"Value\" = \"A1:A2B1:B2\" }")
+        }),
+        new Test("CONCAT(ref(string), ref(string)) with colon strings", new Step[] {
+            new Step("A1 = \"A1:A2\""),
+            new Step("A2 = \"B1:B2\""),
+            new Step("A3 = CONCAT(A1, A2)", new Result[] {
+                new Result("A3", "A1:A2B1:B2"),
+            }),
+            new Step("dump A3", "A3 = { \"Input\" = \"CONCAT(A1, A2)\", \"Value\" = \"A1:A2B1:B2\" }")
+        }),
+        new Test("CONCAT(range) with colon strings", new Step[] {
+            new Step("A1 = \"A1:A2\""),
+            new Step("A2 = \"B1:B2\""),
+            new Step("A3 = CONCAT(A1:A2)", new Result[] {
+                new Result("A3", "A1:A2B1:B2"),
+            }),
+            new Step("dump A3", "A3 = { \"Input\" = \"CONCAT(A1:A2)\", \"Value\" = \"A1:A2B1:B2\" }")
+        }),
+        new Test("CONCAT(string, string, string)", new Step[] {
+            new Step("A1 = CONCAT(\"A, \", \"B, \", \"C\")", new Result[] {
+                new Result("A1", "A, B, C   "),
+            }),
+            new Step("dump A1", "A1 = { \"Input\" = \"CONCAT(\"A, \", \"B, \", \"C\")\", \"Value\" = \"A, B, C\" }")
+        }),
+        new Test("CONCAT(ref(string), ref(string), ref(string))", new Step[] {
+            new Step("A1 = \"A, \""),
+            new Step("A2 = \"B, \""),
+            new Step("A3 = \"C\""),
+            new Step("A4 = CONCAT(A1, A2, A3)", new Result[] {
+                new Result("A4", "A, B, C   "),
+            }),
+            new Step("dump A4", "A4 = { \"Input\" = \"CONCAT(A1, A2, A3)\", \"Value\" = \"A, B, C\" }" ),
+            new Step("A1 = \"D, \"", new Result[] {
+                new Result("A4", "D, B, C   "),
+            }),
+            new Step("A2 = \"E, \"", new Result[] {
+                new Result("A4", "D, E, C   "),
+            }),
+            new Step("A3 = \"F\"", new Result[] {
+                new Result("A4", "D, E, F   "),
+            }),
+            new Step("dump A4", "A4 = { \"Input\" = \"CONCAT(A1, A2, A3)\", \"Value\" = \"D, E, F\" }" )
+        }),
+        new Test("CONCAT(range) high", 26, 99, new Step[] {
+            new Step("X97 = 1"),
+            new Step("X98 = 1"),
+            new Step("Y97 = 1"),
+            new Step("Y98 = 1"),
+           	new Step("Z99 = CONCAT(X97:Y98)", new Result[] { new Result("Z99", "1111      ") }),
+            new Step("dump Z99", "Z99 = { \"Input\" = \"CONCAT(X97:Y98)\", \"Value\" = \"1111\" }")
+        }),
+        new Test("COUNT(string)", new Step[] {
+            new Step("A1 = COUNT(\"Hello World!\")", new Result[] { new Result("A1", "         0") }),
             new Step("dump A1", "A1 = { \"Input\" = \"COUNT(\"Hello World!\")\", \"Value\" = \"0\" }")
         }),
         new Test("COUNT(number)", new Step[] {
-            new Step("A1 = COUNT(1)", new Result[] {
-                new Result("A1", "         1"),
-            }),
+            new Step("A1 = COUNT(1)", new Result[] { new Result("A1", "         1") }),
             new Step("dump A1", "A1 = { \"Input\" = \"COUNT(1)\", \"Value\" = \"1\" }")
         }),
         new Test("COUNT(ref(string))", new Step[] {
             new Step("A1 = \"Hello World!\""),
-           	new Step("A2 = COUNT(A1)", new Result[] {
-        		new Result("A2", "         0"),
-           	}),
+           	new Step("A2 = COUNT(A1)", new Result[] { new Result("A2", "         0") }),
             new Step("dump A2", "A2 = { \"Input\" = \"COUNT(A1)\", \"Value\" = \"0\" }")
         }),
         new Test("COUNT(ref(number))", new Step[] {
             new Step("A1 = 1"),
-           	new Step("A2 = COUNT(A1)", new Result[] {
-        		new Result("A2", "         1"),
-           	}),
+           	new Step("A2 = COUNT(A1)", new Result[] { new Result("A2", "         1") }),
             new Step("dump A2", "A2 = { \"Input\" = \"COUNT(A1)\", \"Value\" = \"1\" }")
+        }),
+        new Test("COUNT(range)", new Step[] {
+            new Step("A1 = 1"),
+            new Step("A2 = 1"),
+            new Step("B1 = 1"),
+            new Step("B2 = 1"),
+           	new Step("C3 = COUNT(A1:B2)", new Result[] { new Result("C3", "         4") }),
+            new Step("dump C3", "C3 = { \"Input\" = \"COUNT(A1:B2)\", \"Value\" = \"4\" }")
+        }),
+        new Test("COUNT(range) update strings to numbers)", new Step[] {
+            new Step("A1 = \"A\""),
+            new Step("A2 = \"A\""),
+            new Step("B1 = \"A\""),
+            new Step("B2 = \"A\""),
+            new Step("C3 = COUNT(A1:B2)", new Result[] { new Result("C3", "         0") }),
+           	new Step("dump C3", "C3 = { \"Input\" = \"COUNT(A1:B2)\", \"Value\" = \"0\" }"),
+            new Step("A1 = 1", new Result[] { new Result("C3", "         1") }),
+            new Step("A2 = 1", new Result[] { new Result("C3", "         2") }),
+            new Step("B1 = 1", new Result[] { new Result("C3", "         3") }),
+            new Step("B2 = 1", new Result[] { new Result("C3", "         4") }),
+           	new Step("dump C3", "C3 = { \"Input\" = \"COUNT(A1:B2)\", \"Value\" = \"4\" }"),
+        }),
+        new Test("COUNT(range) update numbers to strings", new Step[] {
+            new Step("A1 = 1"),
+            new Step("A2 = 1"),
+            new Step("B1 = 1"),
+            new Step("B2 = 1"),
+            new Step("C3 = COUNT(A1:B2)", new Result[] { new Result("C3", "         4") }),
+           	new Step("dump C3", "C3 = { \"Input\" = \"COUNT(A1:B2)\", \"Value\" = \"4\" }"),
+            new Step("A1 = \"A\"", new Result[] { new Result("C3", "         3") }),
+            new Step("A2 = \"A\"", new Result[] { new Result("C3", "         2") }),
+            new Step("B1 = \"A\"", new Result[] { new Result("C3", "         1") }),
+            new Step("B2 = \"A\"", new Result[] { new Result("C3", "         0") }),
+           	new Step("dump C3", "C3 = { \"Input\" = \"COUNT(A1:B2)\", \"Value\" = \"0\" }"),
+        }),
+        new Test("COUNT(range(strings))", new Step[] {
+            new Step("A1 = \"A\""),
+            new Step("A2 = \"B\""),
+            new Step("B1 = \"C\""),
+            new Step("B2 = \"D\""),
+           	new Step("C3 = COUNT(A1:B2)", new Result[] { new Result("C3", "         0") }),
+            new Step("dump C3", "C3 = { \"Input\" = \"COUNT(A1:B2)\", \"Value\" = \"0\" }")
+        }),
+        new Test("COUNT(range(mixed))", new Step[] {
+            new Step("A1 = 1"),
+            new Step("A2 = \"B\""),
+            new Step("B1 = \"C\""),
+            new Step("B2 = 2"),
+           	new Step("C3 = COUNT(A1:B2)", new Result[] { new Result("C3", "         2") }),
+            new Step("dump C3", "C3 = { \"Input\" = \"COUNT(A1:B2)\", \"Value\" = \"2\" }")
+        }),
+        new Test("COUNT(range(#REF))", new Step[] {
+            new Step("A1 = H21"),
+            new Step("A2 = 1"),
+           	new Step("A3 = COUNT(A1:A2)", new Result[] { new Result("A3", "#REF!     ") }),
+            new Step("dump A3", "A3 = { \"Input\" = \"COUNT(A1:A2)\", \"Value\" = \"#REF!\" }")
+        }),
+        new Test("COUNT(range) high", 26, 99, new Step[] {
+            new Step("X97 = 1"),
+            new Step("X98 = 1"),
+            new Step("Y97 = 1"),
+            new Step("Y98 = 1"),
+           	new Step("Z99 = COUNT(X97:Y98)", new Result[] { new Result("Z99", "         4") }),
+            new Step("dump Z99", "Z99 = { \"Input\" = \"COUNT(X97:Y98)\", \"Value\" = \"4\" }")
         }),
     };
 
@@ -730,6 +948,11 @@ public class Test {
     
     
     private void CheckOutput(String actual, String expected) throws Exception {
+    	if (actual != null) {
+    		if (actual.endsWith("\n")) actual = actual.substring(0, actual.length() - 1);
+        	actual = actual.replace(", \"Alignment\" = \"auto\", \"Width\" = \"10\"", "");
+    	}
+    	
         CheckValue(actual, expected, "output");
     }
     

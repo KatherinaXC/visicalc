@@ -3,41 +3,41 @@ public class CellForm extends Cell {
 
     public CellForm(String input, VisiCalc sheet, int width) {
         super(input, sheet, width);
-        setAutoLeft(false);
+        setIsText(false);
     }
 
     public String getValue() {
         String input = getFormula();
         String[] ops;
         if (input.toUpperCase().indexOf("CONCAT(") == 0) {
-     //concat function
+            //concat function
             //returns string
-            setAutoLeft(true);
+            setIsText(true);
             input = input.substring(7, input.length() - 1);
             //TODO
         } else if (input.toUpperCase().indexOf("COUNT(") == 0) {
-     //count function
+            //count function
             //returns number
             input = input.substring(6, input.length() - 1);
             //TODO
         } else if (input.toUpperCase().indexOf("SUM(") == 0) {
-     //sum function
+            //sum function
             //returns number
             input = input.substring(4, input.length() - 1);
             //TODO
         } else if (input.toUpperCase().indexOf("UPPER(") == 0) {
-     //touppercase function
+            //touppercase function
             //returns string
-            setAutoLeft(true);
+            setIsText(true);
             input = input.substring(6, input.length() - 1);
             //TODO
         } else if (input.toUpperCase().indexOf("LENGTH(") == 0) {
-     //length function
+            //length function
             //returns number
             input = input.substring(7, input.length() - 1);
             //TODO
         } else if (input.toUpperCase().indexOf("POWER(") == 0) {
-     //power function
+            //power function
             //returns number
             input = input.substring(6, input.length() - 1);
             //TODO
