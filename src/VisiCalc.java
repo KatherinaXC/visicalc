@@ -73,7 +73,9 @@ public class VisiCalc {
         String cellformula = input.substring(input.indexOf("=") + 1).trim();
         if (!isACell(celladdress)) {
             //Valid-cell error checking for left side errors
-            return "Cell reference, " + celladdress + ", is invalid";
+            if (isCellForm(celladdress)) {
+                return "Cell reference, " + celladdress + ", is invalid";
+            }
         }
         //to preserve width across overwrite...
         int oldwidth = sheet[rownum(celladdress)][colnum(celladdress)].getWidth();
@@ -133,8 +135,8 @@ public class VisiCalc {
             input = fullTable();
         }
         //test for input validity
-        if (!isAParameter(input)) {
-            return "Cell reference, " + input + ", is invalid";
+        if (commandRangeError(input) != null) {
+            return commandRangeError(input);
         }
         String[] cellarray = getIndividualCells(input);
         for (int i = 0; i < cellarray.length; i++) {
@@ -149,8 +151,8 @@ public class VisiCalc {
             input = fullTable();
         }
         //test for input validity
-        if (!isAParameter(input)) {
-            return "Cell reference, " + input + ", is invalid";
+        if (commandRangeError(input) != null) {
+            return commandRangeError(input);
         }
         String[] cellarray = getIndividualCells(input);
         String output = getDump(cellarray[0]);
@@ -164,8 +166,8 @@ public class VisiCalc {
         //array containing [<colmark>, <width>]
         String[] inputarray = input.split(" ");
         //test if input is valid
-        if (!isAParameter(inputarray[0])) {
-            return "Cell reference, " + inputarray[0] + ", is invalid";
+        if (commandRangeError(inputarray[0]) != null) {
+            return commandRangeError(inputarray[0]);
         }
         String[] cellarray = getIndividualCells(inputarray[0]);
         for (int i = 0; i < cellarray.length; i++) {
@@ -315,6 +317,25 @@ public class VisiCalc {
             //if it's a nonexistent cell or something
             return 0;
         }
+    }
+
+    public String commandRangeError(String input) {
+        if (!isAParameter(input)) {
+            //Valid-cell error checking for left side errors
+            if (isCellForm(input)) {
+                //if it's an invalid cell
+                return "Cell reference, " + input + ", is invalid";
+            }
+            //if it's an invalid range
+            if (!isCellForm(input.substring(0, input.indexOf(':')))) {
+                //first param
+                return "Cell reference, " + input.substring(0, input.indexOf(':')) + ", is invalid";
+            } else {
+                //second param
+                return "Cell reference, " + input.substring(input.indexOf(':') + 1, input.length()) + ", is invalid";
+            }
+        }
+        return null;
     }
 
     //obtaining properties/info about a cell, ALL PUBLIC (or should be haha)
