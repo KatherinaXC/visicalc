@@ -197,7 +197,8 @@ public class VisiCalc {
     public static boolean isCellForm(String input) {
         //returns if the input is in the shape of a cell address
         //DOES NOT TEST FOR OUT OF BOUNDS
-        return input.indexOf(':') == -1
+        return !isText(input)
+                && input.indexOf(':') == -1
                 && input.indexOf(',') == -1
                 && input.length() > 1
                 && Character.isLetter(input.charAt(0))
