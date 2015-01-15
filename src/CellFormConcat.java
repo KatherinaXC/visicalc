@@ -1,18 +1,14 @@
 
-public class CellFormConcat extends Cell {
-
-    private String paramsection;
-    private String[] paramlist;
+public class CellFormConcat extends CellForm {
 
     public CellFormConcat(String input, VisiCalc sheet, int width) {
-        super((input.substring(0, 7).toUpperCase() + input.substring(7)), sheet, width);
+        super((input.substring(0, 7).toUpperCase() + input.substring(7)), sheet, width, input.substring(7, input.length() - 1).trim());
         setIsText(true);
-        this.paramsection = input.substring(7, input.length() - 1).trim();
-        this.paramlist = getFormulaParameters(paramsection);
     }
 
     public String getValue() {
-        return "\"" + concat(paramlist) + "\"";
+        //this is the only method that returns a string so override
+        return "\"" + concat(getParamList()) + "\"";
     }
 
     private String concat(String[] list) {
@@ -22,7 +18,7 @@ public class CellFormConcat extends Cell {
             if (sheet.isACell(list[i])) {
                 //if a reference leads to a string literal
                 String cellvalue = sheet.getCellValue(list[i]);
-                if (isText(cellvalue)) {
+                if (sheet.isText(cellvalue)) {
                     cellvalue = cellvalue.substring(1, cellvalue.length() - 1);
                 }
                 output += cellvalue;
@@ -31,7 +27,7 @@ public class CellFormConcat extends Cell {
                 String[] celllist = sheet.getIndividualCells(list[i]);
                 output += concat(celllist);
             } else {
-                if (isText(list[i])) {
+                if (sheet.isText(list[i])) {
                     output += list[i].substring(1, list[i].length() - 1);
                 } else {
                     output += list[i];

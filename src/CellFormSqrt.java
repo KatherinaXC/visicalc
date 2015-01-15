@@ -1,19 +1,16 @@
 
-public class CellFormSqrt extends Cell {
-
-    private String paramsection;
-    private String[] paramlist;
+public class CellFormSqrt extends CellForm {
 
     public CellFormSqrt(String input, VisiCalc sheet, int width) {
-        super((input.substring(0, 5).toUpperCase() + input.substring(5)), sheet, width);
+        super((input.substring(0, 5).toUpperCase() + input.substring(5)), sheet, width, input.substring(5, input.length() - 1).trim());
         setIsText(false);
-        this.paramsection = input.substring(5, input.length() - 1).trim();
-        this.paramlist = getFormulaParameters(paramsection);
     }
-    
+
     public String getValue() {
+        //overrides base method, function does not loop
+        String[] paramlist = getParamList();
         //param must be a number
-        if (!isNumber(paramlist[0])) {
+        if (!sheet.isNumber(paramlist[0])) {
             return "#VALUE!";
         }
         return trimEnd("" + Math.sqrt(Double.parseDouble(paramlist[0])));

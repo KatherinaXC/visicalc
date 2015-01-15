@@ -194,7 +194,7 @@ public class VisiCalc {
     }
 
     //util methods
-    public boolean isCellForm(String input) {
+    public static boolean isCellForm(String input) {
         //returns if the input is in the shape of a cell address
         //DOES NOT TEST FOR OUT OF BOUNDS
         return input.indexOf(':') == -1
@@ -202,6 +202,17 @@ public class VisiCalc {
                 && input.length() > 1
                 && Character.isLetter(input.charAt(0))
                 && isNumber(input.substring(1));
+    }
+
+    public static boolean isRangeForm(String input) {
+        //returns if the input is in the shape of a cell range
+        //DOES NOT TEST FOR OUT OF BOUNDS
+        String[] cellrange = input.split(":");
+        return cellrange.length > 1
+                && isCellForm(cellrange[0])
+                && isCellForm(cellrange[1])
+                && colnum(cellrange[0]) <= colnum(cellrange[1])
+                && rownum(cellrange[0]) <= rownum(cellrange[1]);
     }
 
     public boolean isACell(String celladdress) {
@@ -214,11 +225,9 @@ public class VisiCalc {
     public boolean isARange(String input) {
         //split the colons and test each cell for validity, then make sure the cells are in the right order
         String[] cellrange = input.split(":");
-        return cellrange.length > 1
+        return isRangeForm(input)
                 && isACell(cellrange[0])
-                && isACell(cellrange[1])
-                && colnum(cellrange[0]) <= colnum(cellrange[1])
-                && rownum(cellrange[0]) <= rownum(cellrange[1]);
+                && isACell(cellrange[1]);
     }
 
     public boolean isAParameter(String input) {
@@ -244,6 +253,12 @@ public class VisiCalc {
     public static boolean isNumber(String input) {
         Scanner read = new Scanner(input);
         return read.hasNextDouble();
+    }
+
+    public static boolean isText(String input) {
+        return input.length() > 1
+                && input.charAt(0) == '"'
+                && input.charAt(input.length() - 1) == '"';
     }
 
     public boolean isFilled(String location) {
