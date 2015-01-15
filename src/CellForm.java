@@ -27,7 +27,7 @@ public class CellForm extends Cell {
 
     private double function(String[] list) {
         //separate method so that it can call itself when encountering ranges
-        //this method in its own class isn't actually used - but cellformsum and cellformcount use this
+        //this method in its own class doesn't actually do calculation - uses the process() override in subclasses
         double result = 0;
         for (int i = 0; i < list.length; i++) {
             if (sheet.isNumber(list[i])) {
