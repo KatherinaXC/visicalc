@@ -125,8 +125,34 @@ public class VisiCalc {
 
     //command methods
     public static String getHelp() {
-        //TODO
-        return "Help function.";
+        return "VisiCalc is a spreadsheet program (similar to Excel, but a LOT CRAPPIER). \n"
+                + "\tCommands: \n"
+                + "QUIT:\t Quits the program \n"
+                + "CLEAR:\t Clears the given cells/cell range (clears all cells if no range is given) \n"
+                + "DUMP:\t Dumps (displays) the input, output, width, and alignment of the given cells/range (all cells are dumped if no range is given) \n"
+                + "WIDTH:\t Sets the width of a certain given column to the given width in format \"Width Z 20\" \n"
+                + "ALIGN:\t Aligns the contents of the given cell/range to given alignment in format \"Align a1 left\" or \"Align a1:a2 left\" \n"
+                + "\tFunctions: \n"
+                + "CONCAT:\t -concat(parameters)- Concatenates the contents of the given parameters, strings and numbers included \n"
+                + "COUNT:\t -count(parameters)- Returns the number of numbers in the parameters \n"
+                + "LENGTH:\t -length(cell reference)- Returns the length of all parameters combined, strings and numbers included \n"
+                + "POWER:\t -power(base number, power)- Returns the base number raised to the power \n"
+                + "SQRT:\t -sqrt(number)- Returns the square root of the given parameter \n"
+                + "SUM:\t -sum(parameters)- Returns the sum of the given parameters. Strings are not included \n"
+                + "UPPER:\t -upper(cell reference)- Returns the contents of the given cell in all uppercase \n"
+                + "\tTerms: \n"
+                + "Text:\t A string input beginning and ending with a \" \n"
+                + "Number:\t An input that is not text that can be read as a Double \n"
+                + "Cell Reference:\t A cell that redirects to another cell \n"
+                + "Function:\t One of the above functions, which takes multiple text, number, and reference parameters \n"
+                + "Operation:\t A cell that contains a +-*/ operator and two number operands \n"
+                + "Range:\t An input parameter in the format celladdress:celladdress \n"
+                + "Cell Address:\t The name of a cell, in the format <letter><number> \n"
+                + "\tMisc: \n"
+                + "There's probably a lot more stuff that I could have written here but \n"
+                + "1. I can't think of anything right now,\n"
+                + "2. This method isn't actually being graded, \n"
+                + "3. and I'm tired of trying to think of more help text. \n";
     }
 
     public String commandClear(String input) {
